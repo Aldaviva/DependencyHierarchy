@@ -66,13 +66,20 @@ internal static class Program {
 
         IDictionary<string, Dependency> allDependencies = new Dictionary<string, Dependency>(); // key = name
 
+        ISet<string> intransitiveDependencyNames = projectAssetsDoc.RootElement.GetProperty("project").GetProperty("frameworks").EnumerateObject()
+            .SelectMany(framework => framework.Value.GetProperty("dependencies").EnumerateObject().Select(dependency => dependency.Name)).ToHashSet();
+
         foreach (JsonProperty targetFramework in projectAssetsDoc.RootElement.GetProperty("targets").EnumerateObject()) {
-            IEnumerable<(Dependency, JsonProperty)> intransitiveDependencies = targetFramework.Value.EnumerateObject().Select(package => {
-                string[] splitPackageId = package.Name.Split('/', 2);
-                return (getOrCreateDependency(splitPackageId[0], splitPackageId[1]), package);
+            IEnumerable<(Dependency, JsonProperty)> dependencies = targetFramework.Value.EnumerateObject().Select(package => {
+                string[]   splitPackageId = package.Name.Split('/', 2);
+                string     name           = splitPackageId[0];
+                string     version        = splitPackageId[1];
+                Dependency dependency     = getOrCreateDependency(name, version);
+                dependency.isIntransitive = intransitiveDependencyNames.Contains(name);
+                return (dependency, package);
             }).ToList();
 
-            foreach ((Dependency intransitiveDependency, JsonProperty package) in intransitiveDependencies) {
+            foreach ((Dependency intransitiveDependency, JsonProperty package) in dependencies) {
                 if (package.Value.TryGetProperty("dependencies", out JsonElement transitiveDependencies)) {
                     foreach (JsonProperty transitiveDependencyEl in transitiveDependencies.EnumerateObject()) {
                         string     desiredVersion       = transitiveDependencyEl.Value.GetString()!;
@@ -94,7 +101,7 @@ internal static class Program {
     private static StringBuilder printDependencies(ICollection<Dependency> allDependencies) {
         StringBuilder tree = new();
 
-        foreach (Dependency intransitiveDependency in allDependencies.Where(dependency => dependency.dependents.Count == 0)
+        foreach (Dependency intransitiveDependency in allDependencies.Where(dependency => dependency.isIntransitive)
                      .OrderBy(dependency => dependency.name, STRING_COMPARER)) {
             tree.Append(printDependencyRecursively(intransitiveDependency));
         }

@@ -5,6 +5,12 @@ public class Dependency(string name, string version): IEquatable<Dependency> {
     public string name { get; } = name;
     public string version { get; } = version;
 
+    private bool intransitive;
+    public bool isIntransitive {
+        get => intransitive || _dependencies.Count == 0;
+        set => intransitive = value;
+    }
+
     private readonly Dictionary<Dependency, string> _dependencies = [];
     private readonly Dictionary<Dependency, string> _dependents   = [];
 
@@ -18,11 +24,10 @@ public class Dependency(string name, string version): IEquatable<Dependency> {
     /// </summary>
     public IReadOnlyDictionary<Dependency, string> dependents => _dependents;
 
-    public Dependency dependsOn(Dependency dependency, string desiredVersion) {
+    public void dependsOn(Dependency dependency, string desiredVersion) {
         if (_dependencies.TryAdd(dependency, desiredVersion)) {
             dependency._dependents.Add(this, desiredVersion);
         }
-        return this;
     }
 
     /// <inheritdoc />
