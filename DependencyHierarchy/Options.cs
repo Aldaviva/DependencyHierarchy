@@ -19,7 +19,7 @@ public class Options {
     public static Options? parse(string[]? args = null) {
         var optionsParser = new CommandLineApplication<Options> {
             UnrecognizedArgumentHandling = UnrecognizedArgumentHandling.Throw,
-            Description                  = "Show hierarchy of transitive NuGet package dependencies in C# projects, like Eclipse m2e does."
+            Description                  = "Show hierarchy of transitive NuGet package dependencies in a C# project, like Eclipse m2e or 'npm ls' do."
         };
         optionsParser.Conventions.UseDefaultConventions();
         optionsParser.ExtendedHelpText =

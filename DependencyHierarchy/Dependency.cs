@@ -30,13 +30,17 @@ public class Dependency(string name, string version): IEquatable<Dependency> {
         }
     }
 
+    public static bool operator ==(Dependency? left, Dependency? right) => Equals(left, right);
+
+    public static bool operator !=(Dependency? left, Dependency? right) => !Equals(left, right);
+
     /// <inheritdoc />
-    public bool Equals(Dependency? other) => other is not null && (ReferenceEquals(this, other) || name == other.name /*&& version == other.version*/);
+    public bool Equals(Dependency? other) => other is not null && (ReferenceEquals(this, other) || string.Equals(name, other.name, StringComparison.OrdinalIgnoreCase));
 
     /// <inheritdoc />
     public override bool Equals(object? obj) => obj is not null && (ReferenceEquals(this, obj) || (obj.GetType() == GetType() && Equals((Dependency) obj)));
 
     /// <inheritdoc />
-    public override int GetHashCode() => HashCode.Combine(name /*, version*/);
+    public override int GetHashCode() => StringComparer.OrdinalIgnoreCase.GetHashCode(name);
 
 }
