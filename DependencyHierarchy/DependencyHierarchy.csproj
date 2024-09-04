@@ -2,22 +2,38 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net8.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <RuntimeIdentifiers>win-x64;win-x86;win-arm64;linux-x64;linux-x86;linux-arm;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
-        <Version>0.0.0</Version>
+        <Version>0.0.0-alpha1</Version>
         <Authors>Ben Hutchison</Authors>
         <Copyright>© 2024 $(Authors)</Copyright>
         <AssemblyTitle>C# NuGet Package Dependency Hierarchy</AssemblyTitle>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
         <NoWarn>CS8524</NoWarn>
         <RollForward>latestMajor</RollForward>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <PackAsTool>true</PackAsTool>
+        <AssemblyName>deps</AssemblyName>
+        <PackageProjectUrl>https://github.com/Aldaviva/DependencyHierarchy</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/Aldaviva/DependencyHierarchy.git</RepositoryUrl>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <Description>Show and search the dependency hierarchy of NuGet packages in C# projects</Description>
+        <PackageTags>nuget dependencies dependency-graph dependency-hierarchy packages package-management</PackageTags>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <!-- <PackageReadmeFile>Readme.md</PackageReadmeFile> -->
+        <!-- <ApplicationIcon>icon.ico</ApplicationIcon> -->
+        <ApplicationManifest>app.manifest</ApplicationManifest>
     </PropertyGroup>
 
     <ItemGroup>
         <None Remove="ExceptionAdjustments.txt" />
         <AdditionalFiles Include="ExceptionAdjustments.txt" />
+        <!-- <None Include="..\Readme.md" Pack="true" PackagePath="\" /> -->
+        <!-- <Content Include="icon.ico" /> -->
     </ItemGroup>
 
     <ItemGroup>
@@ -26,8 +42,12 @@
 
     <ItemGroup>
         <Reference Include="Unfucked">
-            <HintPath>..\..\Unfucked\Unfucked\bin\Debug\net8.0\Unfucked.dll</HintPath>
+            <HintPath>..\..\Unfucked\Unfucked\bin\Debug\net6.0\Unfucked.dll</HintPath>
         </Reference>
     </ItemGroup>
+    
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true' or '$(Configuration)' == 'Release'">
+        <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+    </PropertyGroup>
 
 </Project>

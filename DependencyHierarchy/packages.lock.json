@@ -1,7 +1,7 @@
 {
   "version": 1,
   "dependencies": {
-    "net8.0": {
+    "net6.0": {
       "McMaster.Extensions.CommandLineUtils": {
         "type": "Direct",
         "requested": "[4.1.1, )",
@@ -17,14 +17,14 @@
         "contentHash": "dMkqfy2el8A8/I76n2Hi1oBFEbG1SfxD2l5nhwXV3XjlnOmwxJlQbYpJH4W51odnU9sARCSAgv7S3CyAFMkpYg=="
       }
     },
-    "net8.0/linux-arm": {},
-    "net8.0/linux-arm64": {},
-    "net8.0/linux-x64": {},
-    "net8.0/linux-x86": {},
-    "net8.0/osx-arm64": {},
-    "net8.0/osx-x64": {},
-    "net8.0/win-arm64": {},
-    "net8.0/win-x64": {},
-    "net8.0/win-x86": {}
+    "net6.0/linux-arm": {},
+    "net6.0/linux-arm64": {},
+    "net6.0/linux-x64": {},
+    "net6.0/linux-x86": {},
+    "net6.0/osx-arm64": {},
+    "net6.0/osx-x64": {},
+    "net6.0/win-arm64": {},
+    "net6.0/win-x64": {},
+    "net6.0/win-x86": {}
   }
 }
