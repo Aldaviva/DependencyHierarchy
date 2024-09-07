@@ -27,6 +27,7 @@
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <PackageReadmeFile>Readme.md</PackageReadmeFile>
         <ApplicationIcon>icon.ico</ApplicationIcon>
+        <PackageIcon>icon.png</PackageIcon>
         <NoWarn>CS8524</NoWarn>
     </PropertyGroup>
 
@@ -34,7 +35,7 @@
         <None Remove="ExceptionAdjustments.txt" />
         <AdditionalFiles Include="ExceptionAdjustments.txt" />
         <None Include="..\Readme.md" Pack="true" PackagePath="\" />
-        <Content Include="icon.ico" />
+        <None Include="icon.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 
     <ItemGroup>
