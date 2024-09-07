@@ -6,26 +6,27 @@
         <Authors>Ben Hutchison</Authors>
         <Copyright>© 2024 $(Authors)</Copyright>
         <OutputType>Exe</OutputType>
+        <PackAsTool>true</PackAsTool>
         <TargetFramework>net6.0</TargetFramework>
         <RuntimeIdentifiers>win-x64;win-x86;win-arm64;linux-x64;linux-x86;linux-arm;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
-        <AssemblyTitle>C# NuGet Package Dependency Hierarchy</AssemblyTitle>
+        <Product>Dependency Hierarchy</Product>
+        <AssemblyTitle>.NET NuGet Package Dependency Hierarchy</AssemblyTitle>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <LangVersion>latest</LangVersion>
         <RollForward>latestMajor</RollForward>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-        <PackAsTool>true</PackAsTool>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <PackageProjectUrl>https://github.com/Aldaviva/DependencyHierarchy</PackageProjectUrl>
         <RepositoryUrl>https://github.com/Aldaviva/DependencyHierarchy.git</RepositoryUrl>
         <PublishRepositoryUrl>true</PublishRepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
-        <Description>List and search the transitive dependency hierarchy tree of NuGet packages in a C# project</Description>
-        <PackageTags>nuget dependencies dependency-graph dependency-hierarchy packages package-management</PackageTags>
+        <Description>List and search the transitive dependency hierarchy tree of NuGet packages in a .NET project</Description>
+        <PackageTags>nuget dependency dependencies dependency-graph dependency-hierarchy package packages package-management modules transitive</PackageTags>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
         <PackageReadmeFile>Readme.md</PackageReadmeFile>
-        <!-- <ApplicationIcon>icon.ico</ApplicationIcon> -->
+        <ApplicationIcon>icon.ico</ApplicationIcon>
         <NoWarn>CS8524</NoWarn>
     </PropertyGroup>
 
@@ -33,7 +34,7 @@
         <None Remove="ExceptionAdjustments.txt" />
         <AdditionalFiles Include="ExceptionAdjustments.txt" />
         <None Include="..\Readme.md" Pack="true" PackagePath="\" />
-        <!-- <Content Include="icon.ico" /> -->
+        <Content Include="icon.ico" />
     </ItemGroup>
 
     <ItemGroup>

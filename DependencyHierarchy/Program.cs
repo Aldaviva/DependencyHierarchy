@@ -108,7 +108,7 @@ internal static class Program {
 
         return tree;
 
-        static StringBuilder printDependencyRecursively(Dependency dependency, string? desiredVersion = null, int depth = 0) {
+        static StringBuilder printDependencyRecursively(Dependency dependency, string? desiredVersion = null, uint depth = 0) {
             StringBuilder branch = new();
 
             if ((OPTIONS.packageNameFilter == null && dependency.dependencies.Count == 0) || dependency.name.Equals(OPTIONS.packageNameFilter, STRING_COMPARISON)) {
@@ -129,7 +129,7 @@ internal static class Program {
             return branch;
         }
 
-        static string serializeDependency(int depth, Dependency dependency, string? desiredVersion) {
+        static string serializeDependency(uint depth, Dependency dependency, string? desiredVersion) {
             bool   isUnusedVersion = desiredVersion != null && desiredVersion != dependency.version;
             string padding         = "  ".Repeat(depth);
             bool   isFilteredName  = dependency.name.Equals(OPTIONS.packageNameFilter, STRING_COMPARISON);
