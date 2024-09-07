@@ -11,6 +11,12 @@
           "System.ComponentModel.Annotations": "5.0.0"
         }
       },
+      "Unfucked": {
+        "type": "Direct",
+        "requested": "[0.0.0-beta1, )",
+        "resolved": "0.0.0-beta1",
+        "contentHash": "0BPHhzrlHs9mtBlrb9iTNDZPQsFaDp3sUDkKLRMLuhkaoT6zl5fOy38/z9z5B/9cDmImNN9V34q9qKdK8hxdvA=="
+      },
       "System.ComponentModel.Annotations": {
         "type": "Transitive",
         "resolved": "5.0.0",

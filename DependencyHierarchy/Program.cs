@@ -25,7 +25,7 @@ internal static class Program {
         if (Options.parse() is { } opts) {
             OPTIONS = opts;
         } else {
-            Environment.Exit(0); // user passed --help
+            Environment.Exit(0); // user passed --help and usage was already printed
         }
     }
 
@@ -43,8 +43,8 @@ internal static class Program {
         return 0;
     }
 
-    /// <exception cref="FileNotFoundException"></exception>
-    /// <exception cref="DirectoryNotFoundException"></exception>
+    /// <exception cref="FileNotFoundException"><c>object/project.assets.json</c> was not found</exception>
+    /// <exception cref="DirectoryNotFoundException"><c>object/project.assets.json</c> was not found</exception>
     private static async Task<ICollection<Dependency>> parseDependencies() {
         string assetsFilename = Path.Combine(OPTIONS.projectDir, "obj", "project.assets.json");
         Stream assetsFileStream;
@@ -59,32 +59,34 @@ internal static class Program {
             throw;
         }
 
+        IDictionary<string, Dependency> allDependencies = new Dictionary<string, Dependency>(); // key = name
+
         JsonDocument projectAssetsDoc;
         await using (assetsFileStream) {
             projectAssetsDoc = await JsonDocument.ParseAsync(assetsFileStream);
         }
 
-        IDictionary<string, Dependency> allDependencies = new Dictionary<string, Dependency>(); // key = name
+        using (projectAssetsDoc) {
+            ISet<string> intransitiveDependencyNames = projectAssetsDoc.RootElement.GetProperty("project").GetProperty("frameworks").EnumerateObject()
+                .SelectMany(framework => framework.Value.GetProperty("dependencies").EnumerateObject().Select(dependency => dependency.Name)).ToHashSet();
 
-        ISet<string> intransitiveDependencyNames = projectAssetsDoc.RootElement.GetProperty("project").GetProperty("frameworks").EnumerateObject()
-            .SelectMany(framework => framework.Value.GetProperty("dependencies").EnumerateObject().Select(dependency => dependency.Name)).ToHashSet();
+            foreach (JsonProperty targetFramework in projectAssetsDoc.RootElement.GetProperty("targets").EnumerateObject()) {
+                IEnumerable<(Dependency, JsonProperty)> dependencies = targetFramework.Value.EnumerateObject().Select(package => {
+                    string[]   splitPackageId = package.Name.Split('/', 2);
+                    string     name           = splitPackageId[0];
+                    string     version        = splitPackageId[1];
+                    Dependency dependency     = getOrCreateDependency(name, version);
+                    dependency.isIntransitive = intransitiveDependencyNames.Contains(name);
+                    return (dependency, package);
+                }).ToList();
 
-        foreach (JsonProperty targetFramework in projectAssetsDoc.RootElement.GetProperty("targets").EnumerateObject()) {
-            IEnumerable<(Dependency, JsonProperty)> dependencies = targetFramework.Value.EnumerateObject().Select(package => {
-                string[]   splitPackageId = package.Name.Split('/', 2);
-                string     name           = splitPackageId[0];
-                string     version        = splitPackageId[1];
-                Dependency dependency     = getOrCreateDependency(name, version);
-                dependency.isIntransitive = intransitiveDependencyNames.Contains(name);
-                return (dependency, package);
-            }).ToList();
-
-            foreach ((Dependency intransitiveDependency, JsonProperty package) in dependencies) {
-                if (package.Value.TryGetProperty("dependencies", out JsonElement transitiveDependencies)) {
-                    foreach (JsonProperty transitiveDependencyEl in transitiveDependencies.EnumerateObject()) {
-                        string     desiredVersion       = transitiveDependencyEl.Value.GetString()!;
-                        Dependency transitiveDependency = getOrCreateDependency(transitiveDependencyEl.Name, desiredVersion);
-                        intransitiveDependency.dependsOn(transitiveDependency, desiredVersion);
+                foreach ((Dependency intransitiveDependency, JsonProperty package) in dependencies) {
+                    if (package.Value.TryGetProperty("dependencies", out JsonElement transitiveDependencies)) {
+                        foreach (JsonProperty transitiveDependencyEl in transitiveDependencies.EnumerateObject()) {
+                            string     desiredVersion       = transitiveDependencyEl.Value.GetString()!;
+                            Dependency transitiveDependency = getOrCreateDependency(transitiveDependencyEl.Name, desiredVersion);
+                            intransitiveDependency.dependsOn(transitiveDependency, desiredVersion);
+                        }
                     }
                 }
             }

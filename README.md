@@ -1,4 +1,4 @@
-🌳 DependencyHierarchy
+﻿🌳 DependencyHierarchy
 ===
 
 [![Nuget](https://img.shields.io/nuget/v/deps?logo=nuget)](https://www.nuget.org/packages/deps/) [![GitHub Actions](https://img.shields.io/github/actions/workflow/status/Aldaviva/DependencyHierarchy/dotnetpackage.yml?branch=master&logo=github)](https://github.com/Aldaviva/DependencyHierarchy/actions/workflows/dotnetpackage.yml)
@@ -112,4 +112,4 @@ This program will also attempt to automatically disable color output if the cons
 - [Eclipse m2e](https://eclipse.dev/m2e/) for implementing this essential functionality a very long time ago in a GUI, better than any other IDE or tool ever has
 - [`npm ls`](https://docs.npmjs.com/cli/v10/commands/npm-ls) for implementing this essential functionality in a command-line interface
 - [DotNetWhy](https://www.nuget.org/packages/DotNetWhy) for inspiring me to create a .NET Tool that could answer my questions and looked good
-- [DependencyGraph.App](https://www.nuget.org/packages/DependencyGraph.App/) for doing the same thing as my program, but NuGet Gallery search is so ineffective that it didn't even show me this tool when I searched for "dependencies"
+- [DependencyGraph.App](https://www.nuget.org/packages/DependencyGraph.App/) for doing the same thing as my program, but NuGet Gallery search is so ineffective that it didn't show me this tool when I searched for ["dependencies"](https://www.nuget.org/packages?q=dependencies&includeComputedFrameworks=true&packagetype=dotnettool&prerel=false&sortby=relevance), and I only found it after I had already built and published my program.

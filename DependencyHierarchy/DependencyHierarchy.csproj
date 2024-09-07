@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <AssemblyName>deps</AssemblyName>
-        <Version>0.0.0-alpha2</Version>
+        <Version>0.0.0-beta1</Version>
         <Authors>Ben Hutchison</Authors>
         <Copyright>© 2024 $(Authors)</Copyright>
         <OutputType>Exe</OutputType>
@@ -39,12 +39,7 @@
 
     <ItemGroup>
         <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="4.1.1" />
-    </ItemGroup>
-
-    <ItemGroup>
-        <Reference Include="Unfucked">
-            <HintPath>..\..\Unfucked\Unfucked\bin\Debug\net6.0\Unfucked.dll</HintPath>
-        </Reference>
+        <PackageReference Include="Unfucked" Version="0.0.0-beta1" />
     </ItemGroup>
     
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true' or '$(Configuration)' == 'Release'">

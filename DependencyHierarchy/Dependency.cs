@@ -7,7 +7,7 @@ public class Dependency(string name, string version): IEquatable<Dependency> {
 
     private bool intransitive;
     public bool isIntransitive {
-        get => intransitive || _dependencies.Count == 0;
+        get => intransitive || _dependents.Count == 0;
         set => intransitive = value;
     }
 
@@ -42,5 +42,10 @@ public class Dependency(string name, string version): IEquatable<Dependency> {
 
     /// <inheritdoc />
     public override int GetHashCode() => StringComparer.OrdinalIgnoreCase.GetHashCode(name);
+
+    /// <inheritdoc />
+    public override string ToString() {
+        return $"{name} : {version}";
+    }
 
 }
