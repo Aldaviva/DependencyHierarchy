@@ -1,7 +1,7 @@
 🌳 DependencyHierarchy
 ===
 
-[![Nuget](https://img.shields.io/nuget/v/deps?logo=nuget)](https://www.nuget.org/packages/deps/) [![GitHub Actions](https://img.shields.io/github/actions/workflow/status/Aldaviva/DependencyHierarchy/dotnet.yml?branch=master&logo=github)](https://github.com/Aldaviva/DependencyHierarchy/actions/workflows/dotnetpackage.yml)
+[![Nuget](https://img.shields.io/nuget/v/deps?logo=nuget)](https://www.nuget.org/packages/deps/) [![GitHub Actions](https://img.shields.io/github/actions/workflow/status/Aldaviva/DependencyHierarchy/dotnetpackage.yml?branch=master&logo=github)](https://github.com/Aldaviva/DependencyHierarchy/actions/workflows/dotnetpackage.yml)
 
 Command-line tool that shows and filters a tree of a .NET project's effective NuGet package dependencies and their versions, including transitive dependencies.
 
