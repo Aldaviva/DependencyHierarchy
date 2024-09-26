@@ -13,9 +13,9 @@
       },
       "Unfucked": {
         "type": "Direct",
-        "requested": "[0.0.0-beta1, )",
-        "resolved": "0.0.0-beta1",
-        "contentHash": "0BPHhzrlHs9mtBlrb9iTNDZPQsFaDp3sUDkKLRMLuhkaoT6zl5fOy38/z9z5B/9cDmImNN9V34q9qKdK8hxdvA=="
+        "requested": "[0.0.0-beta2, )",
+        "resolved": "0.0.0-beta2",
+        "contentHash": "pK9uaYF+P9rMfn7PuSin/HHCkhAQ7959w70QYN28awf78iQ5OecSdZWujZEWqP9IZQ02el6ehKQH5JG1oJehqA=="
       },
       "System.ComponentModel.Annotations": {
         "type": "Transitive",
