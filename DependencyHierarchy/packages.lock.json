@@ -15,7 +15,7 @@
         "type": "Direct",
         "requested": "[0.0.0-beta4, )",
         "resolved": "0.0.0-beta4",
-        "contentHash": "MZRmUAidr34/7ixnV2tl/ZSULI2Efjl2UJjtgugvA/tffGGYVgDkUY9wPE45KBfLtevL9QtwZ0HUgGGaAIUqKQ=="
+        "contentHash": "pWwHZP9Ok/LAZqFSrZ9CNddcWhx92wFxDh8oUgSrsNZjv/lFbM3HPSdcmLeqj4hhv1eir5a/DcQk+5XPSHzyvQ=="
       },
       "System.ComponentModel.Annotations": {
         "type": "Transitive",
