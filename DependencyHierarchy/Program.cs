@@ -43,8 +43,8 @@ internal static class Program {
         return 0;
     }
 
-    /// <exception cref="FileNotFoundException"><c>object/project.assets.json</c> was not found</exception>
-    /// <exception cref="DirectoryNotFoundException"><c>object/project.assets.json</c> was not found</exception>
+    /// <exception cref="FileNotFoundException"><c>obj/project.assets.json</c> was not found</exception>
+    /// <exception cref="DirectoryNotFoundException"><c>obj/project.assets.json</c> was not found</exception>
     private static async Task<ICollection<Dependency>> parseDependencies() {
         string assetsFilename = Path.Combine(OPTIONS.projectDir, "obj", "project.assets.json");
         Stream assetsFileStream;
@@ -67,8 +67,13 @@ internal static class Program {
         }
 
         using (projectAssetsDoc) {
-            ISet<string> intransitiveDependencyNames = projectAssetsDoc.RootElement.GetProperty("project").GetProperty("frameworks").EnumerateObject()
-                .SelectMany(framework => framework.Value.GetProperty("dependencies").EnumerateObject().Select(dependency => dependency.Name)).ToHashSet();
+            ISet<string> intransitiveDependencyNames = projectAssetsDoc.RootElement.GetProperty("project").GetProperty("frameworks").EnumerateObject().SelectMany(framework => {
+                try {
+                    return framework.Value.GetProperty("dependencies").EnumerateObject().Select(dependency => dependency.Name);
+                } catch (KeyNotFoundException) { // project has no dependencies
+                    return [];
+                }
+            }).ToHashSet();
 
             foreach (JsonProperty targetFramework in projectAssetsDoc.RootElement.GetProperty("targets").EnumerateObject()) {
                 IEnumerable<(Dependency, JsonProperty)> dependencies = targetFramework.Value.EnumerateObject().Select(package => {
