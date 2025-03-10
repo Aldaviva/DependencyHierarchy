@@ -43,11 +43,11 @@ dotnet tool update --global deps
     ```ps1
     cd mysolution/myproject/
     ```
-1. If you haven't restored this project since changing its settings, cleaning, or cloning it, restore its depedencies it to ensure that `obj/project.assets.json` is up-to-date. Opening the project in Visual Studio or building it with `dotnet build` will also restore it automatically.
+1. If you haven't restored this project since changing its settings, cleaning, or cloning it, then restore its depedencies to ensure that `obj/project.assets.json` is up-to-date.
     ```ps1
     dotnet restore
     ```
-    This tool does not automatically restore your project for you, so that you can specify [all the options to `dotnet restore`](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-restore#options) which you need.
+    Opening or building the project in Visual Studio or building it with `dotnet build` will also restore it automatically. This tool does not automatically restore your project for you, so that you can specify [all the options to `dotnet restore`](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-restore#options) which you need.
 1. Run the `deps` tool.
     ```ps1
     deps
@@ -60,7 +60,7 @@ PowerMate : 1.1.1
   HidClient : 1.0.1
     HidSharp : 2.1.0
 ```
-The leftmost, least indented packages are top-level/direct dependencies, manually defined in your `.csproj` or `packages.config` file. Indented packages underneath them are their transitive dependencies that are automatically included when you declare the top-level dependency. The most indented packages are leaf dependencies.
+The leftmost, least indented packages are top-level/direct/intransitive dependencies, manually defined in your `.csproj` or `packages.config` file. Indented packages underneath them are their transitive dependencies that are automatically included when you declare the top-level dependency. The most indented packages are leaf dependencies, which don't depend on any other packages.
 
 The above example shows that the [project](https://github.com/Aldaviva/PowerMate/tree/master/PowerMateVolume) has two direct dependencies: [`CSCore`](https://www.nuget.org/packages/CSCore) and [`PowerMate`](https://www.nuget.org/packages/PowerMate). The `PowerMate` package also has a transitive dependency on [`HidClient`](https://www.nuget.org/packages/HidClient), which in turn has a transitive dependency on the leaf [`HidSharp`](https://www.nuget.org/packages/HidSharp).
 
