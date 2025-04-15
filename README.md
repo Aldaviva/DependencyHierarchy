@@ -1,4 +1,4 @@
-﻿🌳 DependencyHierarchy
+🌳 DependencyHierarchy
 ===
 
 [![Nuget](https://img.shields.io/nuget/v/deps?logo=nuget)](https://www.nuget.org/packages/deps/) [![GitHub Actions](https://img.shields.io/github/actions/workflow/status/Aldaviva/DependencyHierarchy/dotnetpackage.yml?branch=master&logo=github)](https://github.com/Aldaviva/DependencyHierarchy/actions/workflows/dotnetpackage.yml)

@@ -1,4 +1,4 @@
-﻿namespace DependencyHierarchy;
+namespace DependencyHierarchy;
 
 public class Dependency(string name, string version): IEquatable<Dependency> {
 
