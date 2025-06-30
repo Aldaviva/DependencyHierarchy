@@ -39,7 +39,7 @@
 
     <ItemGroup>
         <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="4.1.1" />
-        <PackageReference Include="Unfucked" Version="0.0.1-beta.5" />
+        <PackageReference Include="Unfucked" Version="0.0.1-beta.8" />
     </ItemGroup>
     
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true' or '$(Configuration)' == 'Release'">
