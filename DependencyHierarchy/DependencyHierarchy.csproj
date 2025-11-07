@@ -1,13 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <AssemblyName>deps</AssemblyName>
-        <Version>1.0.2</Version>
+        <Version>1.0.3</Version>
         <Authors>Ben Hutchison</Authors>
         <Copyright>© 2025 $(Authors)</Copyright>
+        <Company>$(Authors)</Company>
         <OutputType>Exe</OutputType>
         <PackAsTool>true</PackAsTool>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
         <RuntimeIdentifiers>win-x64;win-x86;win-arm64;linux-x64;linux-x86;linux-arm;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers>
         <Product>Dependency Hierarchy</Product>
         <AssemblyTitle>.NET NuGet Package Dependency Hierarchy</AssemblyTitle>
@@ -28,7 +29,7 @@
         <PackageReadmeFile>Readme.md</PackageReadmeFile>
         <ApplicationIcon>icon.ico</ApplicationIcon>
         <PackageIcon>icon.png</PackageIcon>
-        <NoWarn>CS8524</NoWarn>
+        <NoWarn>$(NoWarn);8524</NoWarn>
     </PropertyGroup>
 
     <ItemGroup>
@@ -39,9 +40,13 @@
 
     <ItemGroup>
         <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="4.1.1" />
-        <PackageReference Include="Unfucked" Version="0.0.1-beta.16" />
+        <PackageReference Include="Dependencies" Version="1.0.3" />
     </ItemGroup>
-    
+
+    <ItemGroup>
+        <!-- <ProjectReference Include="..\Dependencies\Dependencies.csproj" /> -->
+    </ItemGroup>
+
     <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true' or '$(Configuration)' == 'Release'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>

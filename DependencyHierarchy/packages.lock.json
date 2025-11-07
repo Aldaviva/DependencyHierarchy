@@ -1,7 +1,16 @@
-{
+﻿{
   "version": 1,
   "dependencies": {
     "net6.0": {
+      "Dependencies": {
+        "type": "Direct",
+        "requested": "[1.0.3, )",
+        "resolved": "1.0.3",
+        "contentHash": "OG8/MCtYnyYYz1zI1CAAVGsHVFg4UfwqryHhU7MsGAPOhGbRWwfAR+GtlEqC/IKvOKYEhZFg3cEXaUdXda9uJQ==",
+        "dependencies": {
+          "Unfucked": "0.0.1"
+        }
+      },
       "McMaster.Extensions.CommandLineUtils": {
         "type": "Direct",
         "requested": "[4.1.1, )",
@@ -11,16 +20,15 @@
           "System.ComponentModel.Annotations": "5.0.0"
         }
       },
-      "Unfucked": {
-        "type": "Direct",
-        "requested": "[0.0.1-beta.16, )",
-        "resolved": "0.0.1-beta.16",
-        "contentHash": "/O/G6JfNShUgkBbTJ5qqySd44GaswKQRWz5SIjw2x5fYCrfH3LkLabKpBfxc8R7X6PQqvSgyR4elelLm843V/Q=="
-      },
       "System.ComponentModel.Annotations": {
         "type": "Transitive",
         "resolved": "5.0.0",
         "contentHash": "dMkqfy2el8A8/I76n2Hi1oBFEbG1SfxD2l5nhwXV3XjlnOmwxJlQbYpJH4W51odnU9sARCSAgv7S3CyAFMkpYg=="
+      },
+      "Unfucked": {
+        "type": "Transitive",
+        "resolved": "0.0.1",
+        "contentHash": "6DQUldacvs4Ifaz651ZJr/DxrziI08C30hKLB78sIU46w9lfEcAMIvw5Mf6jxxIcyAoQfkLEMI/bCQSAATRf4Q=="
       }
     },
     "net6.0/linux-arm": {},
@@ -31,6 +39,45 @@
     "net6.0/osx-x64": {},
     "net6.0/win-arm64": {},
     "net6.0/win-x64": {},
-    "net6.0/win-x86": {}
+    "net6.0/win-x86": {},
+    "net8.0": {
+      "Dependencies": {
+        "type": "Direct",
+        "requested": "[1.0.3, )",
+        "resolved": "1.0.3",
+        "contentHash": "OG8/MCtYnyYYz1zI1CAAVGsHVFg4UfwqryHhU7MsGAPOhGbRWwfAR+GtlEqC/IKvOKYEhZFg3cEXaUdXda9uJQ==",
+        "dependencies": {
+          "Unfucked": "0.0.1"
+        }
+      },
+      "McMaster.Extensions.CommandLineUtils": {
+        "type": "Direct",
+        "requested": "[4.1.1, )",
+        "resolved": "4.1.1",
+        "contentHash": "zxgDY+G5yVq2q8sVB3Z275Qkxed1jC95nwAfnlSyoG4l5Nicvd4+ke1jXusEZEfyuErlAgXCKS937c13FmZWBg==",
+        "dependencies": {
+          "System.ComponentModel.Annotations": "5.0.0"
+        }
+      },
+      "System.ComponentModel.Annotations": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "dMkqfy2el8A8/I76n2Hi1oBFEbG1SfxD2l5nhwXV3XjlnOmwxJlQbYpJH4W51odnU9sARCSAgv7S3CyAFMkpYg=="
+      },
+      "Unfucked": {
+        "type": "Transitive",
+        "resolved": "0.0.1",
+        "contentHash": "6DQUldacvs4Ifaz651ZJr/DxrziI08C30hKLB78sIU46w9lfEcAMIvw5Mf6jxxIcyAoQfkLEMI/bCQSAATRf4Q=="
+      }
+    },
+    "net8.0/linux-arm": {},
+    "net8.0/linux-arm64": {},
+    "net8.0/linux-x64": {},
+    "net8.0/linux-x86": {},
+    "net8.0/osx-arm64": {},
+    "net8.0/osx-x64": {},
+    "net8.0/win-arm64": {},
+    "net8.0/win-x64": {},
+    "net8.0/win-x86": {}
   }
 }

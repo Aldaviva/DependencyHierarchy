@@ -1,0 +1,25 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <IsAotCompatible Condition="'$(TargetFramework)' == 'net9.0'">true</IsAotCompatible>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <IncludeSource>true</IncludeSource>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        
+        <Version>1.0.3</Version>
+        <Authors>Ben Hutchison</Authors>
+        <Copyright>© 2025 $(Authors)</Copyright>
+        <Company>$(Authors)</Company>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Unfucked" Version="0.0.1" />
+    </ItemGroup>
+    
+</Project>

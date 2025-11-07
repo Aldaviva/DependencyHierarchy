@@ -1,4 +1,4 @@
-namespace DependencyHierarchy;
+namespace Dependencies;
 
 public class Dependency(string name, string version): IEquatable<Dependency> {
 
@@ -24,7 +24,7 @@ public class Dependency(string name, string version): IEquatable<Dependency> {
     /// </summary>
     public IReadOnlyDictionary<Dependency, string> dependents => _dependents;
 
-    public void dependsOn(Dependency dependency, string desiredVersion) {
+    public void dependOn(Dependency dependency, string desiredVersion) {
         if (_dependencies.TryAdd(dependency, desiredVersion)) {
             dependency._dependents.Add(this, desiredVersion);
         }
@@ -44,8 +44,6 @@ public class Dependency(string name, string version): IEquatable<Dependency> {
     public override int GetHashCode() => StringComparer.OrdinalIgnoreCase.GetHashCode(name);
 
     /// <inheritdoc />
-    public override string ToString() {
-        return $"{name} : {version}";
-    }
+    public override string ToString() => $"{name} : {version}";
 
 }
