@@ -2,15 +2,6 @@
   "version": 1,
   "dependencies": {
     "net10.0": {
-      "envdte": {
-        "type": "Direct",
-        "requested": "[17.14.40260, )",
-        "resolved": "17.14.40260",
-        "contentHash": "8QsDS8a5ke/1eRdkvQCNEdzGG6wKdyV3smYbFHRVbnUenfmxetk+fHTLWJpjulpX64fP7NA/UC+GFIx4V0ulPQ==",
-        "dependencies": {
-          "Microsoft.VisualStudio.Interop": "17.14.40260"
-        }
-      },
       "McMaster.Extensions.CommandLineUtils": {
         "type": "Direct",
         "requested": "[4.1.1, )",
@@ -20,18 +11,17 @@
           "System.ComponentModel.Annotations": "5.0.0"
         }
       },
-      "Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime": {
-        "type": "Transitive",
-        "resolved": "17.14.40254",
-        "contentHash": "ZwQ7yWYcDLjJbbtOjrbqbxRMCQGDzhm2hkqb+vpxidYjGlMS/5kBT1j5HE7hsZGTm66RtqsK5wz8/1/NYt+wnA=="
+      "NuGet.Frameworks": {
+        "type": "Direct",
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "y63Mw1UhQ2Qkwj8LBAk9t+ciFd74biaVpFMQywBrCQC7Y53k41qTI5DJKPtnveH65uA2bnj5h30gMI6lMp7Wcg=="
       },
-      "Microsoft.VisualStudio.Interop": {
-        "type": "Transitive",
-        "resolved": "17.14.40260",
-        "contentHash": "3jG1PSm3mq6SgkT1sKXnukeQxzmm31VEZH+b7EIfyyKOx01fMsr5Iq/sXwW9+4TxDe1sKjbWIJbI5QAkAOCatA==",
-        "dependencies": {
-          "Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime": "17.14.40254"
-        }
+      "NuGet.Versioning": {
+        "type": "Direct",
+        "requested": "[7.0.0, )",
+        "resolved": "7.0.0",
+        "contentHash": "vMEhpystjAmHzWARE09PjYMWOiGgM+f9rJYMcXGs8soz9/url4qmU9O9Y+hy22kPuqozCMoGcJt0JzKRZ1woZg=="
       },
       "System.ComponentModel.Annotations": {
         "type": "Transitive",
@@ -76,7 +66,14 @@
         }
       }
     },
+    "net10.0/linux-arm": {},
+    "net10.0/linux-arm64": {},
+    "net10.0/linux-x64": {},
+    "net10.0/linux-x86": {},
+    "net10.0/osx-arm64": {},
+    "net10.0/osx-x64": {},
     "net10.0/win-arm64": {},
-    "net10.0/win-x64": {}
+    "net10.0/win-x64": {},
+    "net10.0/win-x86": {}
   }
 }

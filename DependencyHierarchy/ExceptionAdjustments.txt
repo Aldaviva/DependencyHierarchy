@@ -7,3 +7,5 @@
 
 M:System.Console.Write(System.String) -T:System.IO.IOException
 M:System.Console.WriteLine(System.String) -T:System.IO.IOException
+P:System.Lazy`1.Value get -T:System.MemberAccessException
+P:System.Lazy`1.Value get -T:System.MissingMemberException

@@ -80,7 +80,7 @@ In the above example, a [project](https://github.com/Aldaviva/mailsender-cs/tree
 
 ## Options
 ### Filter to only show one package
-By default, the output shows all dependencies of the project. To only show one package and its dependents, while hiding all unrelated packages, pass the `--filter` or `-f` option. This can help you figure out why a specific package is in your project.
+By default, the output shows all dependencies of the project. To only show one package and its dependents, while hiding all unrelated packages, pass the `--filter` or `-f` option followed by the package name as the argument. This can help you figure out why a specific package is in your project. Filters are always case insensitive.
 ```ps1
 deps --filter HidClient
 ```
@@ -89,6 +89,15 @@ PowerMate : 1.1.1
   HidClient : 1.0.1
 ```
 This example shows that `HidClient` is in the project because it is a transitive dependency of the `PowerMate` top-level dependency.
+
+You can also pass a [glob pattern](https://github.com/dazinator/DotNet.Glob?tab=readme-ov-file#patterns) as the filter criteria, instead of a literal string that must exactly match the entire package name.
+```ps1
+deps -f '*hid*'
+```
+```text 
+PowerMate : 1.1.1
+  HidClient : 1.0.1
+```
 
 ### Project directory
 By default, this tool looks for a .NET project (that contains an `obj` subdirectory) in the current working directory. To work with a project in a different directory, you can do one of the following.

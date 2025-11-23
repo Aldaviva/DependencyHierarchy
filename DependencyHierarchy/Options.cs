@@ -1,17 +1,28 @@
+using DotNet.Globbing;
 using McMaster.Extensions.CommandLineUtils;
+using System.Text.RegularExpressions;
 using Unfucked;
 
 namespace DependencyHierarchy;
 
 public class Options {
 
+    public Options() {
+        packageNameFilterLazy = new Lazy<Glob?>(() => packageNameFilterPattern is { } pattern && Regex.IsMatch(pattern, @"[^\s*?]")
+            ? Glob.Parse(pattern, new GlobOptions { Evaluation = new EvaluationOptions { CaseInsensitive = true } })
+            : null);
+    }
+
     [Argument(0, "PROJECTDIR", "Directory of a C# project, which should contain an obj subdirectory. Typically contains a .csproj file. Defaults to current working directory.")]
     public string projectDir { get; set; } = string.Empty;
 
     [Option("-f|--filter <PACKAGE>",
-        "Only show the given package and its dependents, hiding unrelated packages. Pass a name like System.Text.Json, or omit to show all transitive dependencies.",
+        "Only show the given package and its dependents, hiding unrelated packages. Pass a name like System.Text.Json or glob like '*json*', or omit to show all transitive dependencies. Case insensitive.",
         CommandOptionType.SingleValue)]
-    public string? packageNameFilter { get; set; }
+    private string? packageNameFilterPattern { get; set; }
+
+    private readonly Lazy<Glob?> packageNameFilterLazy;
+    public Glob? packageNameFilter => packageNameFilterLazy.Value;
 
     [Option("--no-color", "Disable output text colors.", CommandOptionType.NoValue)]
     public bool noColor { get; set; } = false;
@@ -31,7 +42,7 @@ public class Options {
                  
                Show dependency hierarchy for the C# project in a specified directory:
                  {optionsParser.Name} "C:\Path\To\Solution\Project\"
-             
+
                Show only one specified leaf package and its dependents:
                  {optionsParser.Name} --filter System.Text.Json
              """;

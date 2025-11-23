@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <AssemblyName>deps</AssemblyName>
-        <Version>1.0.3</Version>
+        <Version>1.1.0</Version>
         <Authors>Ben Hutchison</Authors>
         <Copyright>© 2025 $(Authors)</Copyright>
         <Company>$(Authors)</Company>
@@ -39,15 +39,15 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="DotNet.Glob" Version="3.1.3" />
         <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="4.1.1" />
-        <PackageReference Include="Dependencies" Version="1.0.3" />
     </ItemGroup>
 
     <ItemGroup>
-        <!-- <ProjectReference Include="..\Dependencies\Dependencies.csproj" /> -->
+        <ProjectReference Include="..\Dependencies\Dependencies.csproj" />
     </ItemGroup>
 
-    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true' or '$(Configuration)' == 'Release'">
+    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true' or '$(Configuration)' != 'Debug'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
 

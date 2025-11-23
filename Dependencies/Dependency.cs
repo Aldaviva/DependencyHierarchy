@@ -4,11 +4,17 @@ public class Dependency(string name, string version): IEquatable<Dependency> {
 
     public string name { get; } = name;
     public string version { get; } = version;
+    public bool isProject { get; set; } = false;
 
-    private bool intransitive;
-    public bool isIntransitive {
-        get => intransitive || _dependents.Count == 0;
-        set => intransitive = value;
+    /// <summary>
+    /// All of the project's TFMs in which it depends on this package
+    /// </summary>
+    public ISet<string> frameworks { get; } = new HashSet<string>();
+
+    private bool transitive;
+    public bool isTransitive {
+        get => transitive || _dependencies.Count != 0;
+        set => transitive = value;
     }
 
     private readonly Dictionary<Dependency, string> _dependencies = [];

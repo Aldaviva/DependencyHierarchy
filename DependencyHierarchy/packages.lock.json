@@ -1,15 +1,12 @@
-﻿{
+{
   "version": 1,
   "dependencies": {
     "net6.0": {
-      "Dependencies": {
+      "DotNet.Glob": {
         "type": "Direct",
-        "requested": "[1.0.3, )",
-        "resolved": "1.0.3",
-        "contentHash": "OG8/MCtYnyYYz1zI1CAAVGsHVFg4UfwqryHhU7MsGAPOhGbRWwfAR+GtlEqC/IKvOKYEhZFg3cEXaUdXda9uJQ==",
-        "dependencies": {
-          "Unfucked": "0.0.1"
-        }
+        "requested": "[3.1.3, )",
+        "resolved": "3.1.3",
+        "contentHash": "hOfHw7MLJw/tbXaFwR1oiDb+dIXDp8URTxp5Pco42OOhiw77wrUNx6v6syNygHZbWwYdXQocL2Mo1l5FnfDVjg=="
       },
       "McMaster.Extensions.CommandLineUtils": {
         "type": "Direct",
@@ -27,8 +24,14 @@
       },
       "Unfucked": {
         "type": "Transitive",
-        "resolved": "0.0.1",
-        "contentHash": "6DQUldacvs4Ifaz651ZJr/DxrziI08C30hKLB78sIU46w9lfEcAMIvw5Mf6jxxIcyAoQfkLEMI/bCQSAATRf4Q=="
+        "resolved": "0.0.1-beta.29",
+        "contentHash": "BwvicbiYbdSx5FJOorXfng+uidzpoCa49uLNPP6/X8bJHJA8gqbo6FvQruDYrXVX9395jPWPmcha2RjfYI2sGQ=="
+      },
+      "dependencies": {
+        "type": "Project",
+        "dependencies": {
+          "Unfucked": "[0.0.1-beta.29, )"
+        }
       }
     },
     "net6.0/linux-arm": {},
@@ -41,14 +44,11 @@
     "net6.0/win-x64": {},
     "net6.0/win-x86": {},
     "net8.0": {
-      "Dependencies": {
+      "DotNet.Glob": {
         "type": "Direct",
-        "requested": "[1.0.3, )",
-        "resolved": "1.0.3",
-        "contentHash": "OG8/MCtYnyYYz1zI1CAAVGsHVFg4UfwqryHhU7MsGAPOhGbRWwfAR+GtlEqC/IKvOKYEhZFg3cEXaUdXda9uJQ==",
-        "dependencies": {
-          "Unfucked": "0.0.1"
-        }
+        "requested": "[3.1.3, )",
+        "resolved": "3.1.3",
+        "contentHash": "hOfHw7MLJw/tbXaFwR1oiDb+dIXDp8URTxp5Pco42OOhiw77wrUNx6v6syNygHZbWwYdXQocL2Mo1l5FnfDVjg=="
       },
       "McMaster.Extensions.CommandLineUtils": {
         "type": "Direct",
@@ -66,8 +66,14 @@
       },
       "Unfucked": {
         "type": "Transitive",
-        "resolved": "0.0.1",
-        "contentHash": "6DQUldacvs4Ifaz651ZJr/DxrziI08C30hKLB78sIU46w9lfEcAMIvw5Mf6jxxIcyAoQfkLEMI/bCQSAATRf4Q=="
+        "resolved": "0.0.1-beta.29",
+        "contentHash": "BwvicbiYbdSx5FJOorXfng+uidzpoCa49uLNPP6/X8bJHJA8gqbo6FvQruDYrXVX9395jPWPmcha2RjfYI2sGQ=="
+      },
+      "dependencies": {
+        "type": "Project",
+        "dependencies": {
+          "Unfucked": "[0.0.1-beta.29, )"
+        }
       }
     },
     "net8.0/linux-arm": {},

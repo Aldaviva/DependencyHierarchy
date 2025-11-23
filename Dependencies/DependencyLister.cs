@@ -36,7 +36,9 @@ public static class DependencyLister {
                     string     name           = splitPackageId[0];
                     string     version        = splitPackageId[1];
                     Dependency dependency     = getOrCreateDependency(name, version);
-                    dependency.isIntransitive = intransitiveDependencyNames.Contains(name);
+                    dependency.isTransitive = !intransitiveDependencyNames.Contains(name);
+                    dependency.isProject    = package.Value.GetProperty("type").GetString() == "project";
+                    dependency.frameworks.Add(targetFramework.Name);
                     return (dependency, package);
                 }).ToList();
 

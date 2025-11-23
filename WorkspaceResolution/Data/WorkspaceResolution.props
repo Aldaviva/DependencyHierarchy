@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+    
+    <Target Name="WorkspaceResolution" AfterTargets="Pack" Condition="'$(WorkspaceResolution)' != 'false'">
+        <ItemGroup>
+            <_WorkspacePackages Include="@(NuGetPackOutput)" Condition="$([System.String]::new('%(NuGetPackOutput.Identity)').ToLowerInvariant().EndsWith('.nupkg'))" />
+        </ItemGroup>
+
+        <PropertyGroup>
+            <_LocalPackageDir><!--$LOCAL_PACKAGE_DIR$--></_LocalPackageDir>
+            <_SkipSolutionArgs Condition="'$(SkipSameSolutionWorkspaceResolution)' != 'false'">--skip-solution "$(SolutionPath)"</_SkipSolutionArgs>
+            <_BuildDependentPackagesArg Condition="'$(BuildDependentPackages)' != 'false'">--build-dependent-packages</_BuildDependentPackagesArg>
+
+            <_WorkspaceResolutionCmd>WorkspaceResolution.exe restore-dependents $(PackageId) $(PackageVersion) "@(_WorkspacePackages)" --local-package-dir "$(_LocalPackageDir.TrimEnd('\'))" $(_SkipSolutionArgs) $(_BuildDependentPackagesArg)</_WorkspaceResolutionCmd>
+        </PropertyGroup>
+
+        <Exec Command="$(_WorkspaceResolutionCmd)" />
+    </Target>
+
+</Project>
