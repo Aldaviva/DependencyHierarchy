@@ -13,7 +13,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Unfucked" Version="0.0.1-beta.29" />
+        <PackageReference Include="Unfucked" Version="0.0.1-beta.31" />
     </ItemGroup>
     
 </Project>
