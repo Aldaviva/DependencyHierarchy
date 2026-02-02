@@ -10,17 +10,9 @@
       },
       "McMaster.Extensions.CommandLineUtils": {
         "type": "Direct",
-        "requested": "[4.1.1, )",
-        "resolved": "4.1.1",
-        "contentHash": "zxgDY+G5yVq2q8sVB3Z275Qkxed1jC95nwAfnlSyoG4l5Nicvd4+ke1jXusEZEfyuErlAgXCKS937c13FmZWBg==",
-        "dependencies": {
-          "System.ComponentModel.Annotations": "5.0.0"
-        }
-      },
-      "System.ComponentModel.Annotations": {
-        "type": "Transitive",
+        "requested": "[5.0.0, )",
         "resolved": "5.0.0",
-        "contentHash": "dMkqfy2el8A8/I76n2Hi1oBFEbG1SfxD2l5nhwXV3XjlnOmwxJlQbYpJH4W51odnU9sARCSAgv7S3CyAFMkpYg=="
+        "contentHash": "f/oIMg5kL+MmY29jFfWJ8Bv9EzDQidN+eJVN2Fb2e5o2u9zN0QXLVOgxoXLbZLUxOzBmZbuhd+ArAt6amducYw=="
       },
       "Unfucked": {
         "type": "Transitive",
@@ -42,48 +34,6 @@
     "net6.0/osx-x64": {},
     "net6.0/win-arm64": {},
     "net6.0/win-x64": {},
-    "net6.0/win-x86": {},
-    "net8.0": {
-      "DotNet.Glob": {
-        "type": "Direct",
-        "requested": "[3.1.3, )",
-        "resolved": "3.1.3",
-        "contentHash": "hOfHw7MLJw/tbXaFwR1oiDb+dIXDp8URTxp5Pco42OOhiw77wrUNx6v6syNygHZbWwYdXQocL2Mo1l5FnfDVjg=="
-      },
-      "McMaster.Extensions.CommandLineUtils": {
-        "type": "Direct",
-        "requested": "[4.1.1, )",
-        "resolved": "4.1.1",
-        "contentHash": "zxgDY+G5yVq2q8sVB3Z275Qkxed1jC95nwAfnlSyoG4l5Nicvd4+ke1jXusEZEfyuErlAgXCKS937c13FmZWBg==",
-        "dependencies": {
-          "System.ComponentModel.Annotations": "5.0.0"
-        }
-      },
-      "System.ComponentModel.Annotations": {
-        "type": "Transitive",
-        "resolved": "5.0.0",
-        "contentHash": "dMkqfy2el8A8/I76n2Hi1oBFEbG1SfxD2l5nhwXV3XjlnOmwxJlQbYpJH4W51odnU9sARCSAgv7S3CyAFMkpYg=="
-      },
-      "Unfucked": {
-        "type": "Transitive",
-        "resolved": "0.0.1-beta.29",
-        "contentHash": "BwvicbiYbdSx5FJOorXfng+uidzpoCa49uLNPP6/X8bJHJA8gqbo6FvQruDYrXVX9395jPWPmcha2RjfYI2sGQ=="
-      },
-      "dependencies": {
-        "type": "Project",
-        "dependencies": {
-          "Unfucked": "[0.0.1-beta.29, )"
-        }
-      }
-    },
-    "net8.0/linux-arm": {},
-    "net8.0/linux-arm64": {},
-    "net8.0/linux-x64": {},
-    "net8.0/linux-x86": {},
-    "net8.0/osx-arm64": {},
-    "net8.0/osx-x64": {},
-    "net8.0/win-arm64": {},
-    "net8.0/win-x64": {},
-    "net8.0/win-x86": {}
+    "net6.0/win-x86": {}
   }
 }
