@@ -1,6 +1,6 @@
 namespace Dependencies;
 
-public class Dependency(string name, string version): IEquatable<Dependency> {
+public sealed class Dependency(string name, string version): IEquatable<Dependency> {
 
     public string name { get; } = name;
     public string version { get; } = version;
@@ -11,11 +11,7 @@ public class Dependency(string name, string version): IEquatable<Dependency> {
     /// </summary>
     public ISet<string> frameworks { get; } = new HashSet<string>();
 
-    private bool transitive;
-    public bool isTransitive {
-        get => transitive || _dependencies.Count != 0;
-        set => transitive = value;
-    }
+    public bool isTransitive { get; set; } = true;
 
     private readonly Dictionary<Dependency, string> _dependencies = [];
     private readonly Dictionary<Dependency, string> _dependents   = [];

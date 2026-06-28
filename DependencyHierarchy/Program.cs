@@ -28,7 +28,7 @@ internal static class Program {
     }
 
     public static async Task<int> Main() {
-        ICollection<Dependency> dependencies;
+        IReadOnlyCollection<Dependency> dependencies;
         try {
             dependencies = await DependencyLister.listDependencies(OPTIONS.projectDir);
         } catch (FileNotFoundException e) {
@@ -46,11 +46,11 @@ internal static class Program {
             "Try restoring the project first using Visual Studio or 'dotnet restore'.", ConsoleColor.DarkRed);
     }
 
-    private static StringBuilder printDependencies(ICollection<Dependency> allDependencies) {
+    private static StringBuilder printDependencies(IEnumerable<Dependency> allDependencies) {
         StringBuilder tree = new();
 
-        foreach (Dependency intransitiveDependency in allDependencies.Where(dependency => !dependency.isTransitive)
-                     .OrderBy(dependency => dependency.name, STRING_COMPARER)) {
+        foreach (Dependency intransitiveDependency in allDependencies.Where(static dependency => !dependency.isTransitive)
+                     .OrderBy(static dependency => dependency.name, STRING_COMPARER)) {
             tree.Append(printDependencyRecursively(intransitiveDependency));
         }
 
@@ -67,7 +67,7 @@ internal static class Program {
                 }
             } else {
                 foreach (KeyValuePair<Dependency, string> transitiveDependency in
-                         dependency.dependencies.OrderBy(dependency => dependency.Key.name, STRING_COMPARER)) {
+                         dependency.dependencies.OrderBy(static dependency => dependency.Key.name, STRING_COMPARER)) {
                     StringBuilder subBranch = printDependencyRecursively(transitiveDependency.Key, transitiveDependency.Value, depth + 1);
                     if (subBranch.Length != 0 || isMatchOrNoFiltering) {
                         if (branch.Length == 0) {

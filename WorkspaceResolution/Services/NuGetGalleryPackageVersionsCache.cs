@@ -4,7 +4,7 @@ using Unfucked;
 
 namespace WorkspaceResolution.Services;
 
-public class NuGetGalleryPackageVersionsCache(NuGetGalleryService nuGetGallery): IDisposable {
+public sealed class NuGetGalleryPackageVersionsCache(NuGetGalleryService nuGetGallery) {
 
     public async Task<bool> doesPackageVersionExist(string packageName, string packageVersion, string localPackageDirectory, CancellationToken cancellationToken = default) {
         using Semaphore semaphore = new(1, 1, "WorkspaceResolution.galleryPackageExistanceCache");
@@ -12,21 +12,21 @@ public class NuGetGalleryPackageVersionsCache(NuGetGalleryService nuGetGallery):
         try {
             await using FileStream galleryPackageExistenceCacheStream = new(Path.Combine(localPackageDirectory, "nugetGalleryExistingPackageVersions.json"), FileMode.OpenOrCreate,
                 FileAccess.ReadWrite, FileShare.None);
-            IDictionary<string, ISet<string>> galleryPackageExistenceCache;
+            Dictionary<string, HashSet<string>> galleryPackageExistenceCache;
             try {
-                galleryPackageExistenceCache = await JsonSerializer.DeserializeAsync<IDictionary<string, ISet<string>>>(galleryPackageExistenceCacheStream, cancellationToken: cancellationToken) ??
+                galleryPackageExistenceCache = await JsonSerializer.DeserializeAsync<Dictionary<string, HashSet<string>>>(galleryPackageExistenceCacheStream, cancellationToken: cancellationToken) ??
                     throw new JsonException("null");
             } catch (JsonException) {
-                galleryPackageExistenceCache = new Dictionary<string, ISet<string>>();
+                galleryPackageExistenceCache = new Dictionary<string, HashSet<string>>();
             }
 
-            ISet<string> knownGalleryPackageVersions = galleryPackageExistenceCache.GetOrAdd(packageName.ToLowerInvariant(), new HashSet<string>(), out bool _);
+            HashSet<string> knownGalleryPackageVersions = galleryPackageExistenceCache.GetOrAdd(packageName.ToLowerInvariant(), [], out bool _);
             if (doesPackageVersionExistInGallery()) {
                 return true;
             } else {
-                Console.WriteLine("Fetching list of version numbers for package {0} in NuGet Gallery to check for version {1}.", packageName, packageVersion);
+                // Console.WriteLine("Fetching list of version numbers for package {0} in NuGet Gallery to check for version {1}.", packageName, packageVersion);
                 IEnumerable<PackageVersion> allGalleryPackageVersions = await nuGetGallery.fetchAllVersions(packageName);
-                knownGalleryPackageVersions.AddAll(allGalleryPackageVersions.Select(version => version.version.ToLowerInvariant()));
+                knownGalleryPackageVersions.AddAll(allGalleryPackageVersions.Select(static version => version.version.ToLowerInvariant()));
 
                 galleryPackageExistenceCacheStream.Position = 0;
                 galleryPackageExistenceCacheStream.SetLength(0);
@@ -42,11 +42,6 @@ public class NuGetGalleryPackageVersionsCache(NuGetGalleryService nuGetGallery):
         } finally {
             semaphore.Release();
         }
-    }
-
-    public void Dispose() {
-        nuGetGallery.Dispose();
-        GC.SuppressFinalize(this);
     }
 
 }

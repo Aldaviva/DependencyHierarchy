@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace NuGetGalleryClient;
 
-public record PackageVersion {
+public sealed record PackageVersion {
 
     [JsonPropertyName("id")]
     public required string name { get; init; }
@@ -10,6 +10,8 @@ public record PackageVersion {
     public required string version { get; init; }
 
     [JsonPropertyName("packageContent")]
-    public required Uri content { get; init; }
+    public Uri? content { get; init; }
+
+    public long totalDownloads { get; init; }
 
 }

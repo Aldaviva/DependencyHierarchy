@@ -8,7 +8,7 @@ namespace DependencyHierarchy;
 public class Options {
 
     public Options() {
-        packageNameFilterLazy = new Lazy<Glob?>(() => packageNameFilterPattern is { } pattern && Regex.IsMatch(pattern, @"[^\s*?]")
+        packageNameFilterLazy = new Lazy<Glob?>(() => packageNameFilterPattern is {} pattern && Regex.IsMatch(pattern, @"[^\s*?]")
             ? Glob.Parse(pattern, new GlobOptions { Evaluation = new EvaluationOptions { CaseInsensitive = true } })
             : null);
     }
@@ -36,20 +36,20 @@ public class Options {
         optionsParser.ExtendedHelpText =
             $"""
 
-             Examples:
-               Show dependency hierarchy for the C# project in the current directory:
-                 {optionsParser.Name}
-                 
-               Show dependency hierarchy for the C# project in a specified directory:
-                 {optionsParser.Name} "C:\Path\To\Solution\Project\"
+            Examples:
+              Show dependency hierarchy for the C# project in the current directory:
+                {optionsParser.Name}
+                
+              Show dependency hierarchy for the C# project in a specified directory:
+                {optionsParser.Name} "C:\Path\To\Solution\Project\"
 
-               Show only one specified leaf package and its dependents:
-                 {optionsParser.Name} --filter System.Text.Json
-             """;
+              Show only one specified leaf package and its dependents:
+                {optionsParser.Name} --filter System.Text.Json
+            """;
         optionsParser.Parse(args ?? Environment.GetCommandLineArgs().Skip(1).ToArray());
         Options parsed = optionsParser.Model;
 
-        parsed.projectDir = parsed.projectDir.HasText() ? Path.GetFullPath(parsed.projectDir.TrimEnd('"')) : Environment.CurrentDirectory;
+        parsed.projectDir = parsed.projectDir.HasText ? Path.GetFullPath(parsed.projectDir.TrimEnd('"')) : Environment.CurrentDirectory;
         if (Path.GetExtension(parsed.projectDir).Equals(".csproj", StringComparison.OrdinalIgnoreCase)) {
             parsed.projectDir = Path.GetDirectoryName(parsed.projectDir)!;
         }

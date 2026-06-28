@@ -19,13 +19,14 @@ public static partial class VisualStudioService {
         var projectQueue = Channel.CreateUnbounded<CsProject>(new UnboundedChannelOptions { SingleReader = true });
 
         _ = Parallel.ForEachAsync(findRunningInstances(cancellationToken), cancellationToken, async (vs, ct) => {
-            Solution solution                 = vs.Solution;
-            string   solutionAbsoluteFilename = Path.GetFullPath(solution.FullName);
-            foreach (Project proj in solution.Projects.Cast<Project>()) {
-                Guid projectKind = new(proj.Kind);
-                if (CS_PROJECT_KINDS.Contains(projectKind)) {
-                    CsProject project = new(proj.Name, Path.GetFullPath(proj.FullName), projectKind, solutionAbsoluteFilename);
-                    await projectQueue.Writer.WriteAsync(project, ct);
+            if (vs.Solution is { FullName: { Length: not 0 } solutionName } solution) {
+                string solutionAbsoluteFilename = Path.GetFullPath(solutionName);
+                foreach (Project proj in solution.Projects.Cast<Project>()) {
+                    Guid projectKind = new(proj.Kind);
+                    if (CS_PROJECT_KINDS.Contains(projectKind)) {
+                        CsProject project = new(proj.Name, Path.GetFullPath(proj.FullName), projectKind, solutionAbsoluteFilename);
+                        await projectQueue.Writer.WriteAsync(project, ct);
+                    }
                 }
             }
         }).ContinueWith(task => projectQueue.Writer.Complete(task.Exception?.GetBaseException()), cancellationToken);

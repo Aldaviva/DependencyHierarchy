@@ -133,7 +133,7 @@ WorkspaceResolution.exe install --local-package-dir "C:\Users\Ben\AppData\Local\
 ### Exclude projects in package's same solution from restoration
 If other projects in the package's solution depend on your package using a hybrid configuration-sensitive `PackageReference` and `ProjectReference` technique, restoring the dependent projects each time can do nothing more than delay unit test executions.
 
-You may still want workspace resolution for other projects in other solutions which always depend upon your package using NuGet `PackageReference`. To do this, disable automatic restores of projects in the same solution by setting the `SkipSameSolutionWorkspaceResolution` property to `true`, either in the dependency project file, a [global properties file](https://learn.microsoft.com/en-us/visualstudio/msbuild/customize-your-local-build?view=vs-2022#use-msbuildextensionspath-and-msbuilduserextensionspath), or on the command line during builds. This property is safe to check into version control because setting it doesn't change or break the build for consumers who don't have Workspace Resolution installed, including build machines.
+You may still want workspace resolution for other projects in other solutions which always depend upon your package using NuGet `PackageReference`. Therefore, by default, this project will disable automatic restores of projects in the same solution. You can also control this setting by setting the `SkipSameSolutionWorkspaceResolution` property to `true` or `false`, either in the dependency project file, a [global properties file](https://learn.microsoft.com/en-us/visualstudio/msbuild/customize-your-local-build?view=vs-2022#use-msbuildextensionspath-and-msbuilduserextensionspath), or on the command line during builds. This property is safe to check into version control because setting it doesn't change or break the build for consumers who don't have Workspace Resolution installed, including build machines.
 ```xml
 <PropertyGroup>
     <SkipSameSolutionWorkspaceResolution>true</SkipSameSolutionWorkspaceResolution>
@@ -143,6 +143,19 @@ You may still want workspace resolution for other projects in other solutions wh
 ```ps1
 dotnet build -p:SkipSameSolutionWorkspaceResolution=true
 ```
+
+### Disable multi-level package dependency chain building
+If you have a chain of multiple package dependencies, this project will automatically build all of them at once when the first one is built, to avoid having to manually build the entire chain every time the first package changes. You can disable this by setting the `BuildDependentPackages` property to `false`.
+
+For example, consider the following dependency graph, where the ← edge represents a "depends on" relationship, *i.e.* "A ← B" means "B depends on A". All four projects are open in Visual Studio and can be in different solutions.
+
+```text
+MyLibraryA ← MyLibraryB ← MyLibraryC ← MyProgram
+```
+
+- With workspace resolution disabled, any change to MyLibraryA would require manually packaging and publishing all four projects for the changes to take effect in MyProgram.
+- With workspace resolution enabled but dependent package building disabled, building MyLibraryA would restore and show the changes when editing MyLibraryB, but would require manually packaging and publishing the last three projects for the changes to take effect in MyProgram.
+- With both workspace resolution and dependent package building enabled, all you have to do is build MyLibraryA for its changes to appear in MyProgram.
 
 ## Considerations
 - Enabling `GeneratePackageOnBuild` disables the implicit build during `dotnet pack` to avoid an infinite loop, so if you relied on that, you will need to either `dotnet build; dotnet pack` or `dotnet pack -p:GeneratePackageOnBuild=false`.

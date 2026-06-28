@@ -6,15 +6,15 @@ using NuGetGalleryClient;
 using ProvidedDependencies;
 using ProvidedDependencies.Data;
 using System.Collections.Immutable;
-using System.IO.Compression;
+using System.Diagnostics;
 using System.Reflection;
 using System.Security;
 using System.Text;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
-using Unfucked.HTTP.Exceptions;
 
 const string DEFAULT_PROPS_FILENAME = "providedDependencies.g.props";
 
@@ -49,18 +49,27 @@ if (getCsprojFile(csprojOrDir.Value) is not {} csprojFile) {
     return 1;
 }
 
+string csprojDir = Path.GetDirectoryName(csprojFile)!;
+Environment.CurrentDirectory = csprojDir;
+
+Task<ProcessResult> cacheDirOutput = Process.ExecFile("dotnet", "nuget", "locals", "global-packages", "--list");
+
 Console.Write("Restoring {0}... ", Path.GetFileName(csprojFile));
-if (await Processes.ExecFile("dotnet", "restore", csprojFile) is { exitCode: not 0 } restore) {
-    Console.WriteLine("\nRestore failed: {0}", restore.stdout);
-    return restore.exitCode;
+if (await Process.ExecFile("dotnet", "restore", csprojFile, "--force", "--force-evaluate", "-p:RestoreEnablePackagePruning=false") is { ExitCode: not 0 } restore) {
+    Console.WriteLine("\nRestore failed: {0}", restore.StdOut);
+    return restore.ExitCode;
 }
 Console.WriteLine("done.");
 
-Encoding                      utf8                      = new UTF8Encoding(false, true);
-using UnfuckedHttpClient      http                      = new();
-using NuGetGalleryService     nuGetGallery              = new(http);
-XmlSerializer                 frameworkListDeserializer = new(typeof(FrameworkFileList));
-Task<ICollection<Dependency>> projectDependenciesTask   = DependencyLister.listDependencies(Path.GetDirectoryName(csprojFile)!);
+Encoding                              utf8                      = new UTF8Encoding(false, true);
+using UnfuckedHttpClient              http                      = new() { Timeout = TimeSpan.FromMinutes(10) };
+using NuGetGalleryService             nuGetGallery              = new(http);
+XmlSerializer                         frameworkListDeserializer = new(typeof(FrameworkFileList));
+Task<IReadOnlyCollection<Dependency>> projectDependenciesTask   = DependencyLister.listDependencies(csprojDir);
+Task<ProcessResult> projectPropertiesTask = Process.ExecFile("dotnet", "msbuild", csprojFile, "-getProperty:" + ((ReadOnlySpan<string>) [
+    "managepackageversionscentrally",
+    "directorypackagespropspath"
+]).Join(','));
 
 XDocument projectDoc;
 string    projectFileContents;
@@ -71,10 +80,10 @@ await using (FileStream projectFileStream = File.OpenRead(csprojFile)) {
 }
 bool isAspNetCoreProject = projectDoc.Root!.Attribute("Sdk")?.Value.Equals("Microsoft.NET.Sdk.Web", StringComparison.OrdinalIgnoreCase) ?? false;
 
-string propsFilename       = outputFile.Value() ?? Path.Combine(Path.GetDirectoryName(csprojFile)!, DEFAULT_PROPS_FILENAME);
-string expectedPropsImport = Path.GetRelativePath(Path.GetDirectoryName(csprojFile)!, propsFilename);
+string propsFilename       = outputFile.Value() ?? Path.Combine(csprojDir, DEFAULT_PROPS_FILENAME);
+string expectedPropsImport = Path.GetRelativePath(csprojDir, propsFilename);
 bool projectImportedProps = projectDoc.Root!.Elements("Import")
-    .Any(import => Paths.Dos2UnixSlashes(import.Attribute("Project")?.Value) is {} actual && actual.Equals(Paths.Dos2UnixSlashes(expectedPropsImport), StringComparison.OrdinalIgnoreCase));
+    .Any(import => Path.Dos2UnixSlashes(import.Attribute("Project")?.Value) is {} actual && actual.Equals(Path.Dos2UnixSlashes(expectedPropsImport), StringComparison.OrdinalIgnoreCase));
 
 IList<NuGetFramework> projectTfms = projectDoc.Descendants("TargetFrameworks")
     .Concat(projectDoc.Descendants("TargetFramework"))
@@ -87,11 +96,11 @@ ISet<string> projectTfmNames = projectTfms.Select(framework => framework.GetShor
 Task<IDictionary<string, PackageVersion>>  runtimeRefVersions           = fetchReleaseVersionNumbers(false);
 Task<IDictionary<string, PackageVersion>>? aspNetCoreRuntimeRefVersions = isAspNetCoreProject ? fetchReleaseVersionNumbers(true) : null;
 
-Console.WriteLine("Downloading reference assemblies for .NET runtimes...");
+string userPackageCacheDir = (await cacheDirOutput).StdOut.TrimStart("global-packages: ");
 IDictionary<Version, ISet<string>> providedPackagesByRuntimeVersion = (await Task.WhenAll(projectTfms.DistinctBy(tfm => tfm.Version).Select(async projectTfm => {
-    Task<ISet<string>?> runtimePackagesTask = fetchRuntimeProvidedPackages(projectTfm, await runtimeRefVersions);
+    Task<ISet<string>?> runtimePackagesTask = listRuntimeProvidedPackages(projectTfm, await runtimeRefVersions);
     Task<ISet<string>?> aspNetCoreRuntimePackagesTask =
-        aspNetCoreRuntimeRefVersions != null ? fetchRuntimeProvidedPackages(projectTfm, await aspNetCoreRuntimeRefVersions) : Task.FromResult<ISet<string>?>(null);
+        aspNetCoreRuntimeRefVersions != null ? listRuntimeProvidedPackages(projectTfm, await aspNetCoreRuntimeRefVersions) : Task.FromResult<ISet<string>?>(null);
 
     ISet<string> allProvidedPackages = await runtimePackagesTask ?? new HashSet<string>();
     allProvidedPackages.UnionWith(await aspNetCoreRuntimePackagesTask ?? ImmutableHashSet<string>.Empty);
@@ -99,7 +108,7 @@ IDictionary<Version, ISet<string>> providedPackagesByRuntimeVersion = (await Tas
     return new KeyValuePair<Version, ISet<string>>(projectTfm.Version, allProvidedPackages);
 }))).ToDictionary();
 
-ICollection<Dependency> resolvedProjectDependencies = await projectDependenciesTask;
+IReadOnlyCollection<Dependency> resolvedProjectDependencies = await projectDependenciesTask;
 
 IDictionary<NuGetFramework, ISet<string>> intersectingProvidedPackageNamesByTfm = projectTfms.ToDictionary(tfm => tfm, tfm => {
     ISet<string> intersection = new HashSet<string>(providedPackagesByRuntimeVersion[tfm.Version]);
@@ -123,31 +132,47 @@ IEnumerable<(string packageName, NuGetVersion latestPatchForProvidedMinorVersion
     .SelectMany(providedPackage => providedPackage)
     .GroupBy(package => (package.packageName, package.latestPatchForProvidedMinorVersion),
         (nameAndVersion, packages) => (nameAndVersion.packageName, nameAndVersion.latestPatchForProvidedMinorVersion,
-                                       tfms: (ISet<string>) packages.Select(dependency => dependency.tfm.GetShortFolderName()).ToHashSet()));
+                                       tfms: (ISet<string>) packages.Select(dependency => dependency.tfm.GetShortFolderName()).ToHashSet()))
+    .OrderBy(providedPackage => providedPackage.packageName, StringComparer.OrdinalIgnoreCase)
+    .ToList();
+
+IDictionary<string, string> projectProperties = JsonNode.Parse((await projectPropertiesTask).StdOut)!["Properties"]!.AsObject()
+    .ToDictionary(static pair => pair.Key.ToLowerInvariant(), static pair => pair.Value!.GetValue<string>().EmptyToNull).Compact();
+bool centralPackageManagementEnabled = projectProperties.TryGetValue("managepackageversionscentrally", out string? managePackageVersionsCentrally) &&
+    "true".Equals(managePackageVersionsCentrally, StringComparison.OrdinalIgnoreCase);
 
 await using FileStream propsFileStream = File.Create(propsFilename);
 
-Project   propsFile = new() { comment = $"Generated by {nameof(ProvidedDependencies)} {Assembly.GetEntryAssembly()!.GetName().Version!.ToString(3)} on {DateTimeOffset.UtcNow:O}" };
-ItemGroup itemGroup = new() { label   = "Provided by runtime", condition = "'$(_IsPublishing)' == 'true'" };
-propsFile.itemGroup.Add(itemGroup);
-itemGroup.packageReferences.AddAll(providedPackages.OrderBy(providedPackage => providedPackage.packageName, StringComparer.OrdinalIgnoreCase).SelectMany(providedPackage => {
+string    generatedComment = $"Generated by {nameof(ProvidedDependencies)} {Assembly.GetEntryAssembly()!.GetName().Version!.ToString(3)} on {DateTimeOffset.UtcNow:O}";
+Project   propsFile        = new() { comment = generatedComment };
+ItemGroup itemGroup        = new() { label   = "Provided by runtime", condition = "'$(_IsPublishing)' == 'true'" };
+propsFile.itemGroups.Add(itemGroup);
+itemGroup.packageReferences.AddAll(providedPackages.SelectMany(providedPackage => {
     bool conditionalDependency = !providedPackage.tfms.SetEquals(projectTfmNames);
     PackageReference packageReference = new() {
         include       = providedPackage.packageName,
-        version       = providedPackage.latestPatchForProvidedMinorVersion.ToNormalizedString(),
+        excludeAssets = "all",
+        version       = centralPackageManagementEnabled ? null : providedPackage.latestPatchForProvidedMinorVersion.ToNormalizedString(),
         privateAssets = "all"
     };
     return conditionalDependency ? providedPackage.tfms.Select(tfm => packageReference with { condition = $"'(TargetFramework)' == '{tfm}'" }) : [packageReference];
 }));
+// show all dependencies in project.assets.json so this can exclude them, which is more robust than RestoreEnablePackagePruning that still crashes in single-file framework-dependent roll-forward apps
+propsFile.propertyGroup.Add("RestoreEnablePackagePruning", "false");
 
 string xmlFileIndentation = projectIndentation.Match(projectFileContents).Value;
 
 XmlSerializer projectSerializer = new(typeof(Project));
 string        xmlLineEnding     = projectFileContents[Math.Max(0, projectFileContents.IndexOf('\n') - 1)] == '\r' ? "\r\n" : "\n";
-await using XmlWriter xmlWriter = XmlWriter.Create(propsFileStream, new XmlWriterSettings {
-    Indent       = true, IndentChars = xmlFileIndentation, Async = true, OmitXmlDeclaration = true, Encoding = utf8,
-    NewLineChars = xmlLineEnding
-});
+XmlWriterSettings xmlWriterSettings = new() {
+    Indent             = true,
+    IndentChars        = xmlFileIndentation,
+    Async              = true,
+    OmitXmlDeclaration = true,
+    Encoding           = utf8,
+    NewLineChars       = xmlLineEnding
+};
+await using XmlWriter xmlWriter = XmlWriter.Create(propsFileStream, xmlWriterSettings);
 
 XmlSerializerNamespaces namespaces = new([new XmlQualifiedName(string.Empty)]); // remove unnecessary xsi and xsd namespaces
 projectSerializer.Serialize(xmlWriter, propsFile, namespaces);
@@ -167,6 +192,44 @@ if (!projectImportedProps) {
     Console.WriteLine("Imported {0} into {1}", Path.GetFileName(propsFilename), Path.GetFileName(csprojFile));
 }
 
+if (centralPackageManagementEnabled) {
+    await using FileStream directoryPackagesPropsFileStream = new(projectProperties["directorypackagespropspath"], FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None);
+    await using XmlWriter  directoryPackagesPropsFileWriter = XmlWriter.Create(directoryPackagesPropsFileStream, xmlWriterSettings);
+
+    Project directoryPackagesProps = directoryPackagesPropsFileStream.Length != 0 ? (Project) projectSerializer.Deserialize(directoryPackagesPropsFileStream)! : new Project {
+        propertyGroup = {
+            ["ManagePackageVersionsCentrally"] = "true"
+        }
+    };
+    directoryPackagesProps.comment = generatedComment;
+
+    string itemGroupLabel = "Provided by runtime to " + Path.GetFileNameWithoutExtension(csprojFile);
+    if (directoryPackagesProps.itemGroups.FirstOrDefault(group => itemGroupLabel.Equals(group.label, StringComparison.OrdinalIgnoreCase)) is not {} projectSpecificCpmItemGroup) {
+        projectSpecificCpmItemGroup = new ItemGroup { label = itemGroupLabel };
+        directoryPackagesProps.itemGroups.Add(projectSpecificCpmItemGroup);
+    }
+
+    projectSpecificCpmItemGroup.condition = "'$(_IsPublishing)' == 'true'";
+    projectSpecificCpmItemGroup.packageVersions.Clear();
+    projectSpecificCpmItemGroup.packageVersions.AddAll(providedPackages.Select(providedPackage => new PackageReference {
+        include = providedPackage.packageName,
+        version = providedPackage.latestPatchForProvidedMinorVersion.ToNormalizedString()
+    }));
+
+    ISet<string> includedPackageVersions = new HashSet<string>();
+    foreach (PackageReference packageVersion in directoryPackagesProps.itemGroups.SelectMany(group => group.packageVersions)) {
+        if (packageVersion.include is {} packageName && !includedPackageVersions.Add(packageName.ToLowerInvariant())) {
+            packageVersion.update  = packageName;
+            packageVersion.include = null;
+        }
+    }
+
+    directoryPackagesPropsFileStream.SetLength(0);
+
+    projectSerializer.Serialize(directoryPackagesPropsFileWriter, directoryPackagesProps, namespaces);
+    Console.WriteLine("Wrote {0}", directoryPackagesPropsFileStream.Name);
+}
+
 return 0;
 
 async Task<IDictionary<string, PackageVersion>> fetchReleaseVersionNumbers(bool aspNetCoreRuntime) =>
@@ -174,20 +237,23 @@ async Task<IDictionary<string, PackageVersion>> fetchReleaseVersionNumbers(bool 
     .Where(packageVersion => !packageVersion.nuGetVersion.IsPrerelease)
     .ToDictionary(version => version.version);
 
-async Task<ISet<string>?> fetchRuntimeProvidedPackages(NuGetFramework tfm, IDictionary<string, PackageVersion> availableRuntimeVersions) {
+async Task<ISet<string>?> listRuntimeProvidedPackages(NuGetFramework tfm, IDictionary<string, PackageVersion> availableRuntimeVersions) {
     if (tfm.Version.Float(NuGetVersionFloatBehavior.Patch).FindBestMatch(availableRuntimeVersions.Select(pair => pair.Value.nuGetVersion)) is {} bestMatch) {
-        PackageVersion refPackageToDownload = availableRuntimeVersions[bestMatch.OriginalVersion!];
-        try {
-            await using Stream     zipStream           = await http.Target(refPackageToDownload.content).Get<Stream>();
-            await using ZipArchive zipArchive          = new(zipStream, ZipArchiveMode.Read);
-            await using Stream     frameworkListStream = await zipArchive.GetEntry("data/FrameworkList.xml")!.OpenAsync();
-            FrameworkFileList      frameworkList       = (FrameworkFileList) frameworkListDeserializer.Deserialize(frameworkListStream)!;
-            Console.WriteLine("Downloaded {0} {1}", refPackageToDownload.name, refPackageToDownload.version);
-            return frameworkList.files.Select(file => file.assemblyName).ToHashSet();
-        } catch (HttpException e) {
-            Console.WriteLine($"Failed to download .NET runtime reference package {refPackageToDownload.name} {refPackageToDownload.version} from {refPackageToDownload.content}: {e.MessageChain()}");
-            throw;
+        PackageVersion refPackageToFetch = availableRuntimeVersions[bestMatch.OriginalVersion!];
+        string         appRefDir         = Path.Combine(userPackageCacheDir, refPackageToFetch.name, refPackageToFetch.version);
+        if (!Directory.Exists(appRefDir)) {
+            string tempDownloaderProjectDir = Directory.CreateTempDir();
+            Console.WriteLine("Downloading .NET runtime reference assembly {0} {1}...", refPackageToFetch.name, refPackageToFetch.version);
+            try {
+                await Process.ExecFile("nuget", "install", refPackageToFetch.name, "-Version", refPackageToFetch.version, "-SolutionDirectory", tempDownloaderProjectDir);
+                // nuget exits with 1 because there is no project in that empty directory
+            } finally {
+                Directory.TryDelete(tempDownloaderProjectDir);
+            }
         }
+        await using FileStream frameworkListStream = File.OpenRead(Path.Combine(appRefDir, "data", "FrameworkList.xml"));
+        FrameworkFileList      frameworkList       = (FrameworkFileList) frameworkListDeserializer.Deserialize(frameworkListStream)!;
+        return frameworkList.files.Select(file => file.assemblyName).ToHashSet();
     } else {
         return null;
     }

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
@@ -6,9 +6,9 @@
         <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
         <AssemblyTitle>Workspace Resolution</AssemblyTitle>
         <Authors>Ben Hutchison</Authors>
-        <Copyright>© 2025 $(Authors)</Copyright>
+        <Copyright>© 2026 $(Authors)</Copyright>
         <Company>$(Authors)</Company>
-        <Version>1.0.1</Version>
+        <Version>1.0.3</Version>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RollForward>latestMajor</RollForward>
@@ -17,6 +17,7 @@
         <DebugType>embedded</DebugType>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <ApplicationIcon>ben.ico</ApplicationIcon>
+        <WarningsAsErrors>CA1859</WarningsAsErrors>
     </PropertyGroup>
 
     <ItemGroup>
@@ -27,7 +28,7 @@
 
     <ItemGroup>
         <PackageReference Include="envdte" Version="17.14.40260" />
-        <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="4.1.1" />
+        <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="5.1.0" />
     </ItemGroup>
 
     <ItemGroup>

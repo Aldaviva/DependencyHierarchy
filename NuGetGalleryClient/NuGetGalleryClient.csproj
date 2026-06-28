@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
@@ -8,14 +8,14 @@
         
         <Version>1.0.0</Version>
         <Authors>Ben Hutchison</Authors>
-        <Copyright>© 2025 $(Authors)</Copyright>
+        <Copyright>© 2026 $(Authors)</Copyright>
         <Company>$(Authors)</Company>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ThrottleDebounce" Version="3.0.0-beta5" />
-        <PackageReference Include="Unfucked.Caching" Version="0.0.1-beta.2" />
-        <PackageReference Include="Unfucked.HTTP" Version="0.0.1-beta.22" />
+        <PackageReference Include="ThrottleDebounce" Version="3.0.0-beta6" />
+        <PackageReference Include="Unfucked.Caching" Version="0.0.1-beta.6" />
+        <PackageReference Include="Unfucked.HTTP" Version="0.0.1-beta.31" />
     </ItemGroup>
 
 </Project>

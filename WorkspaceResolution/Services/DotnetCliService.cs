@@ -4,7 +4,6 @@ using System.Text.Json;
 using System.Text.Json.Nodes;
 using Unfucked;
 using WorkspaceResolution.Data;
-using Processes = Unfucked.Processes;
 
 namespace WorkspaceResolution.Services;
 
@@ -31,18 +30,18 @@ public static class DotnetCliService {
             // don't restore in same solution, it slows down unit testing cycles, and you can use conditional project references instead
             if (project.solutionAbsoluteFilename.Equals(excludedSolutionFile, CASE_INSENSITIVE)) return;
 
-            ICollection<Dependency> dependencies = await DependencyLister.listDependencies(Path.GetDirectoryName(project.absoluteFilename)!, ct);
+            IReadOnlyCollection<Dependency> dependencies = await DependencyLister.listDependencies(Path.GetDirectoryName(project.absoluteFilename)!, ct);
 
             if (!dependencies.Any(dep => dep.name.Equals(packageName, CASE_INSENSITIVE))) return; // project doesn't depend on package
 
-            Stopwatch                                                   restoreStopwatch = Stopwatch.StartNew();
-            (int exitCode, string standardOutput, string standardError) restoreResult    = await restore(project, localPackageDir);
+            Stopwatch     restoreStopwatch = Stopwatch.StartNew();
+            ProcessResult restoreResult    = await restore(project, localPackageDir);
             restoreStopwatch.Stop();
 
-            if (restoreResult.exitCode != 0) {
-                Console.WriteLine("Failed to restore {0}: exit code {1}", project.absoluteFilename, restoreResult.exitCode);
-                Console.WriteLine(restoreResult.standardOutput);
-                Console.WriteLine(restoreResult.standardError);
+            if (restoreResult.ExitCode != 0) {
+                Console.WriteLine("Failed to restore {0}: exit code {1}", project.absoluteFilename, restoreResult.ExitCode);
+                Console.WriteLine(restoreResult.StdOut);
+                Console.WriteLine(restoreResult.StdErr);
                 return;
             }
 
@@ -54,8 +53,8 @@ public static class DotnetCliService {
         });
     }
 
-    private static async Task<(int exitCode, string standardOutput, string standardError)> restore(CsProject project, string packageSource) {
-        (int exitCode, string stdout, string stderr) result = await Processes.ExecFile(DOTNET,
+    private static async Task<ProcessResult> restore(CsProject project, string packageSource) =>
+        await Process.ExecFile(DOTNET,
             "restore",
             project.absoluteFilename,
             "-v:q",
@@ -64,75 +63,67 @@ public static class DotnetCliService {
             "--source",
             Path.GetFullPath(packageSource));
 
-        return result;
-    }
-
-    private static async Task<int> build(CsProject project) {
-        (int exitCode, string standardOutput, string standardError) = await Processes.ExecFile(DOTNET,
+    private static async Task<int> build(CsProject project) =>
+        (await Process.ExecFile(DOTNET,
             "build",
             project.absoluteFilename,
             "-v:q",
-            "--no-restore");
+            "--no-restore"))
+        .ExitCode;
 
-        return exitCode;
-    }
-
-    public static async Task<IEnumerable<(string url, bool isEnabled)>> listPackageSources(CancellationToken cancellationToken = default) {
-        (int exitCode, string stdout, string stderr) = await Processes.ExecFile(DOTNET, [
+    public static async Task<IEnumerable<(string url, bool isEnabled)>> listPackageSources(CancellationToken cancellationToken = default) =>
+        (await Process.ExecFile(DOTNET, [
             "nuget",
             "list",
             "source",
             "--format", "short"
-        ], cancellationToken: cancellationToken);
-
-        return stdout
-            .Trim()
-            .Split('\n')
-            .Select(line => {
-                string[] lineSplit = line.Trim().Split(' ', 2);
-                return (url: lineSplit[1], isEnabled: lineSplit[0] == "E");
-            });
-    }
+        ], cancellationToken: cancellationToken))
+        .StdOut
+        .Trim()
+        .Split('\n')
+        .Select(static line => {
+            string[] lineSplit = line.Trim().Split(' ', 2);
+            return (url: lineSplit[1], isEnabled: lineSplit[0] == "E");
+        });
 
     /// <exception cref="ApplicationException"></exception>
     public static async Task addPackageSource(string name, string url, CancellationToken cancellationToken = default) {
-        (int exitCode, string stdout, string stderr) = await Processes.ExecFile(DOTNET, [
+        ProcessResult addResult = await Process.ExecFile(DOTNET, [
             "nuget",
             "add",
             "source", url,
             "--name", name
         ], cancellationToken: cancellationToken);
 
-        if (exitCode != 0) {
-            throw new ApplicationException(stdout + '\n' + stderr) { Data = { { "exitCode", exitCode } } };
+        if (addResult.ExitCode != 0) {
+            throw new ApplicationException(addResult.StdOut + '\n' + addResult.StdErr) { Data = { { "exitCode", addResult.ExitCode } } };
         }
     }
 
     private static async Task<bool> isPackable(CsProject project) {
-        (int exitCode, string stdout, string stderr) = await Processes.ExecFile(DOTNET,
+        ProcessResult propertyResult = await Process.ExecFile(DOTNET,
             "msbuild",
             project.absoluteFilename,
-            "-getProperty:" + ((ReadOnlySpan<string?>) [
+            "-getProperty:" + ((ReadOnlySpan<string>) [
                 "ispackable",
                 "istestproject",
                 "symbolpackageformat",
                 ..PACKAGE_PROPERTY_NAMES
             ]).Join(','));
 
-        if (exitCode != 0) return false;
+        if (propertyResult.ExitCode != 0) return false;
 
         try {
-            IDictionary<string, string> projectProperties = JsonNode.Parse(stdout)!["Properties"]!.AsObject()
-                .ToDictionary(pair => pair.Key.ToLowerInvariant(), pair => pair.Value!.GetValue<string>().EmptyToNull()).Compact();
+            IDictionary<string, string> projectProperties = JsonNode.Parse(propertyResult.StdOut)!["Properties"]!.AsObject()
+                .ToDictionary(static pair => pair.Key.ToLowerInvariant(), static pair => pair.Value!.GetValue<string>().EmptyToNull).Compact();
 
             return !"false".Equals(projectProperties.GetValueOrNull("ispackable"), CASE_INSENSITIVE) &&
                 !"true".Equals(projectProperties.GetValueOrNull("istestproject"), CASE_INSENSITIVE) &&
                 ("snupkg".Equals(projectProperties.GetValueOrNull("symbolpackageformat"), CASE_INSENSITIVE) ||
-                    PACKAGE_PROPERTY_NAMES.Any(packagePropertyName => projectProperties.GetValueOrNull(packagePropertyName).HasText()));
+                    PACKAGE_PROPERTY_NAMES.Any(packagePropertyName => projectProperties.GetValueOrNull(packagePropertyName).HasText));
         } catch (JsonException) {
             return false;
         }
-
     }
 
 }

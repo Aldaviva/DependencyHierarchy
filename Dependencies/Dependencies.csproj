@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
@@ -8,12 +8,12 @@
         
         <Version>1.1.0</Version>
         <Authors>Ben Hutchison</Authors>
-        <Copyright>© 2025 $(Authors)</Copyright>
+        <Copyright>© 2026 $(Authors)</Copyright>
         <Company>$(Authors)</Company>
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Unfucked" Version="0.0.1-beta.29" />
+        <PackageReference Include="Unfucked" Version="0.0.1-beta.48" />
     </ItemGroup>
     
 </Project>
