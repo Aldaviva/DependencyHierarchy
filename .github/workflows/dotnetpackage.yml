@@ -21,13 +21,13 @@ jobs:
       run: dotnet restore --locked-mode
 
     - name: Pack DependencyHierarchy
-      run: dotnet pack DependencyHierarchy --configuration Release
+      run: dotnet pack DependencyHierarchy --no-restore --configuration Release
 
     - name: Pack ProvidedDependencies
-      run: dotnet publish ProvidedDependencies --runtime win-x64 --configuration Release -p:PublishSingleFile=true --self-contained false
+      run: dotnet publish ProvidedDependencies --no-restore --runtime win-x64 --configuration Release -p:PublishSingleFile=true --self-contained false
 
     - name: Pack WorkspaceResolution
-      run: dotnet publish WorkspaceResolution --runtime win-x64 --configuration Release -p:PublishSingleFile=true --self-contained false
+      run: dotnet publish WorkspaceResolution --no-restore --runtime win-x64 --configuration Release -p:PublishSingleFile=true --self-contained false
 
     - name: Upload DependencyHierarchy package
       uses: actions/upload-artifact@v7

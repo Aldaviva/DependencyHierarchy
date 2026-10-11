@@ -54,6 +54,7 @@
         "type": "Project",
         "dependencies": {
           "ThrottleDebounce": "[3.0.0, )",
+          "Unfucked": "[0.0.1-beta.53, )",
           "Unfucked.Caching": "[0.0.1-beta.6, )",
           "Unfucked.HTTP": "[0.0.1-beta.33, )"
         }
