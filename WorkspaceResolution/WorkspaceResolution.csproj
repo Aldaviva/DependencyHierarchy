@@ -8,7 +8,7 @@
         <Authors>Ben Hutchison</Authors>
         <Copyright>© 2026 $(Authors)</Copyright>
         <Company>$(Authors)</Company>
-        <Version>1.0.3</Version>
+        <Version>1.0.5</Version>
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RollForward>latestMajor</RollForward>
@@ -21,13 +21,14 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AdditionalFiles Include="ExceptionAdjustments.txt" />
         <Content Include="ben.ico" />
+        <AdditionalFiles Include="ExceptionAdjustments.txt" />
         <EmbeddedResource Include="Data\WorkspaceResolution.props" LogicalName="WorkspaceResolution.props" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="envdte" Version="17.14.40260" />
+        <PackageReference Include="Gapotchenko.FX.Diagnostics.Process" Version="2026.8.3" />
         <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="5.1.0" />
     </ItemGroup>
 

@@ -10,25 +10,26 @@
       },
       "NuGet.Frameworks": {
         "type": "Direct",
-        "requested": "[7.6.0, )",
-        "resolved": "7.6.0",
-        "contentHash": "rJ7QtKN45XzLXCrMATve6eFLiUyUGEkA1rFSb6U6Fw6laM4hEAcKOrcdbgWlcFUlCK2158qP1LF00hg/ivF3nw=="
+        "requested": "[7.9.0, )",
+        "resolved": "7.9.0",
+        "contentHash": "w2adPmgUafmW9ON1MzDjuHmViN0vtiPV48Dz3OE6px8BiGSqrnWHOjwFEPOEPAZx20J1c7bxp90Hxo9l4xGWtw=="
       },
       "NuGet.Versioning": {
         "type": "Direct",
-        "requested": "[7.6.0, )",
-        "resolved": "7.6.0",
-        "contentHash": "TpZxfOoQBQk/0r/2uc1A1qNYIKHkJGgOrWP+ax3nsNAUN/1BOQMDrgmGADogSA4hOXH1ZJiyeYg4Ca+vUW0sEg=="
+        "requested": "[7.9.0, )",
+        "resolved": "7.9.0",
+        "contentHash": "r4sZuVpVqwSBLe4qYDrnpScqdyctlRXg0HSF5OoCGkeBc8b+o8BBYHuI/u1RoWYX78PbieijU13TBt71/Xf3lw=="
+      },
+      "Unfucked": {
+        "type": "Direct",
+        "requested": "[0.0.1-beta.53, )",
+        "resolved": "0.0.1-beta.53",
+        "contentHash": "cn/CRmctaDM/gbQhynqxYF0NX0L7fV0dw5TvcqAGhjhB9hNAHw7joP1h/qV+hhl1b1TC0UkfS8JcaysQpBj+VA=="
       },
       "ThrottleDebounce": {
         "type": "Transitive",
-        "resolved": "3.0.0-beta6",
-        "contentHash": "hLr071LwvbfwNvjsnEb5FP7BNnmu4qG6++ZHAdVEaLCv01BQ9m3G1PLKv/C8DPJ9hFcs+3EUNh+c9/Lg459HIw=="
-      },
-      "Unfucked": {
-        "type": "Transitive",
-        "resolved": "0.0.1-beta.48",
-        "contentHash": "Cs2SNUfC+vJ7rj//ucEVFoIhvR6NxRJ2niGD32UmUxh9ZVcxIPaYfZu1wEfgvDnNWxQQJ46pVF+Hwy4WKatcLQ=="
+        "resolved": "3.0.0",
+        "contentHash": "TOzvjaCJ3GVUGceYm1uvvibDCOiXyj4f2kUAr9RPdWG8xpgd0jtVqgX8nNEj+zWg/AFR4lRNh28sMefm5qI6Tg=="
       },
       "Unfucked.Caching": {
         "type": "Transitive",
@@ -37,24 +38,24 @@
       },
       "Unfucked.HTTP": {
         "type": "Transitive",
-        "resolved": "0.0.1-beta.31",
-        "contentHash": "ui1dSqAk1ikK9Y2IRCFswYOx6mXVQEUqauz+kgbFDlvdnnsgmklxcSDywQiCl3ujSEAUachUqvW84jsbbHQYzA==",
+        "resolved": "0.0.1-beta.33",
+        "contentHash": "EhS1b26NamzYMzq+hy67jvWYXxm1EM2Bw6zojABZG664UWkOPfg1mz8F13Usm7iDhSvaaGxzAIrpa5Vau/PRRg==",
         "dependencies": {
-          "Unfucked": "0.0.1-beta.47"
+          "Unfucked": "0.0.1-beta.50"
         }
       },
       "dependencies": {
         "type": "Project",
         "dependencies": {
-          "Unfucked": "[0.0.1-beta.48, )"
+          "Unfucked": "[0.0.1-beta.53, )"
         }
       },
       "nugetgalleryclient": {
         "type": "Project",
         "dependencies": {
-          "ThrottleDebounce": "[3.0.0-beta6, )",
+          "ThrottleDebounce": "[3.0.0, )",
           "Unfucked.Caching": "[0.0.1-beta.6, )",
-          "Unfucked.HTTP": "[0.0.1-beta.31, )"
+          "Unfucked.HTTP": "[0.0.1-beta.33, )"
         }
       }
     },

@@ -4,6 +4,7 @@ using System.Collections.Frozen;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Threading.Channels;
+using ThrottleDebounce.Retry;
 using WorkspaceResolution.Data;
 
 namespace WorkspaceResolution.Services;
@@ -15,20 +16,28 @@ public static partial class VisualStudioService {
     // https://stackoverflow.com/a/53485177/979493
     private static readonly FrozenSet<Guid> CS_PROJECT_KINDS = [new("FAE04EC0-301F-11D3-BF4B-00C04F79EFBC"), new("9A19103F-16F7-4668-BE54-9A1E7A4F7556")];
 
+    private static readonly RetryOptions RETRY_OPTIONS = new() {
+        MaxAttempts    = 6,
+        Delay          = Delays.Exponential(TimeSpan.FromSeconds(1 / 3.0)),
+        IsRetryAllowed = static (e, _) => e is COMException { HResult: unchecked((int) 0x8001010A) } // RPC_E_SERVERCALL_RETRYLATER: The message filter indicated that the application is busy.
+    };
+
     public static async IAsyncEnumerable<CsProject> findOpenCsProjects([EnumeratorCancellation] CancellationToken cancellationToken = default) {
         var projectQueue = Channel.CreateUnbounded<CsProject>(new UnboundedChannelOptions { SingleReader = true });
 
         _ = Parallel.ForEachAsync(findRunningInstances(cancellationToken), cancellationToken, async (vs, ct) => {
-            if (vs.Solution is { FullName: { Length: not 0 } solutionName } solution) {
-                string solutionAbsoluteFilename = Path.GetFullPath(solutionName);
-                foreach (Project proj in solution.Projects.Cast<Project>()) {
-                    Guid projectKind = new(proj.Kind);
-                    if (CS_PROJECT_KINDS.Contains(projectKind)) {
-                        CsProject project = new(proj.Name, Path.GetFullPath(proj.FullName), projectKind, solutionAbsoluteFilename);
-                        await projectQueue.Writer.WriteAsync(project, ct);
+            await Retrier.Attempt(async _ => {
+                if (vs.Solution is { FullName: { Length: not 0 } solutionName } solution) {
+                    string solutionAbsoluteFilename = Path.GetFullPath(solutionName);
+                    foreach (Project proj in solution.Projects.Cast<Project>()) {
+                        Guid projectKind = new(proj.Kind);
+                        if (CS_PROJECT_KINDS.Contains(projectKind)) {
+                            CsProject project = new(proj.Name, Path.GetFullPath(proj.FullName), projectKind, solutionAbsoluteFilename);
+                            await projectQueue.Writer.WriteAsync(project, ct);
+                        }
                     }
                 }
-            }
+            }, RETRY_OPTIONS with { CancellationToken = ct });
         }).ContinueWith(task => projectQueue.Writer.Complete(task.Exception?.GetBaseException()), cancellationToken);
 
         await foreach (CsProject project in projectQueue.Reader.ReadAllAsync(cancellationToken)) {
@@ -37,7 +46,7 @@ public static partial class VisualStudioService {
     }
 
     // https://stackoverflow.com/a/14205934
-    private static IEnumerable<DTE> findRunningInstances(CancellationToken ct = default) {
+    private static IEnumerable<DTE> findRunningInstances(CancellationToken ct) {
         Marshal.ThrowExceptionForHR(GetRunningObjectTable(0, out IRunningObjectTable rot));
         rot.EnumRunning(out IEnumMoniker enumMoniker);
 

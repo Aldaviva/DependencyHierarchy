@@ -2,7 +2,6 @@ using Dependencies;
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using Unfucked;
 using WorkspaceResolution.Data;
 
 namespace WorkspaceResolution.Services;

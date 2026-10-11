@@ -11,11 +11,81 @@
           "Microsoft.VisualStudio.Interop": "17.14.40260"
         }
       },
+      "Gapotchenko.FX.Diagnostics.Process": {
+        "type": "Direct",
+        "requested": "[2026.8.3, )",
+        "resolved": "2026.8.3",
+        "contentHash": "cH5Ztrt308pnQst2NPQrDcUtebF4GyNIPYbiBom81Pl6e07ob/37STYA5T0ni1gitT85RGT3AZqgwBfmJFXHyQ==",
+        "dependencies": {
+          "Gapotchenko.FX": "2026.8.3",
+          "Gapotchenko.FX.Diagnostics.CommandLine": "2026.8.3",
+          "Gapotchenko.FX.Threading": "2026.8.3"
+        }
+      },
       "McMaster.Extensions.CommandLineUtils": {
         "type": "Direct",
         "requested": "[5.1.0, )",
         "resolved": "5.1.0",
         "contentHash": "YceiKmxdsBrlkAJpmJ2N8XkLyAH01xLsm4VLfjNp5MvtAom2wflZtEBz3CLMQret6Z7jSh3oBO1ULF1Is0tNxA=="
+      },
+      "Gapotchenko.FX": {
+        "type": "Transitive",
+        "resolved": "2026.8.3",
+        "contentHash": "1qVtNPaizWp3/1fojTcLXZNGLSN1glprAgOH8z8ftO1zY6dAncgraTEKJfSHQBJAtUuqLlQ6HekU1AExST+8TA=="
+      },
+      "Gapotchenko.FX.Collections": {
+        "type": "Transitive",
+        "resolved": "2026.8.3",
+        "contentHash": "Ic1lDTsB9lcIZnxV2xbalgq8BjdUl8HyrbvPBAYtKxAJBVTr+AgKYk9CoN2ima4oDiSBM3Y7XjbtxagNxfzAng==",
+        "dependencies": {
+          "Gapotchenko.FX": "2026.8.3",
+          "Gapotchenko.FX.Linq": "2026.8.3"
+        }
+      },
+      "Gapotchenko.FX.Diagnostics.CommandLine": {
+        "type": "Transitive",
+        "resolved": "2026.8.3",
+        "contentHash": "jLKIYfjem6Gp5bVsEI0R5quoP20KAbkLuDfqY9cGaJYdKpSnKeYkUuJaPoH3QEG2QJMqCuonFb7qsl3Fx16a5Q==",
+        "dependencies": {
+          "Gapotchenko.FX": "2026.8.3",
+          "Gapotchenko.FX.IO": "2026.8.3",
+          "Gapotchenko.FX.Text": "2026.8.3"
+        }
+      },
+      "Gapotchenko.FX.IO": {
+        "type": "Transitive",
+        "resolved": "2026.8.3",
+        "contentHash": "1AEKS5evfo4ANBOvPB/7nROWHZKy8fkC07iWkdFfCTlvhcUxzZilu9Oyi4Gft34QdFh0apoc3UXX6NujZzt2Nw==",
+        "dependencies": {
+          "Gapotchenko.FX": "2026.8.3",
+          "Gapotchenko.FX.Text": "2026.8.3",
+          "Gapotchenko.FX.Threading": "2026.8.3"
+        }
+      },
+      "Gapotchenko.FX.Linq": {
+        "type": "Transitive",
+        "resolved": "2026.8.3",
+        "contentHash": "BwUbzNHvGUx8truIn4MW4DW0SQK0REhB5Uy3Wqtbzb7DVjt8MxyXb/l7DR6/GeQRXpNO/bjq2TA7nSWPumkd4A==",
+        "dependencies": {
+          "Gapotchenko.FX": "2026.8.3"
+        }
+      },
+      "Gapotchenko.FX.Text": {
+        "type": "Transitive",
+        "resolved": "2026.8.3",
+        "contentHash": "mG92N79QM2gOlecpaOqE27ADEHTJCxByRFE/zJUzawAPaIENm7nc0h3y/+QzHOM+lkMd9sU0Skjy3yfAtVvA1w==",
+        "dependencies": {
+          "Gapotchenko.FX": "2026.8.3"
+        }
+      },
+      "Gapotchenko.FX.Threading": {
+        "type": "Transitive",
+        "resolved": "2026.8.3",
+        "contentHash": "35OedjS93xW6/A5FzfcVODS1TDO7pI1We+TisEKP4fGRu1srGhiAgJbWCGIrCzVM0gRzJw0PuMtnFxzZTgf42g==",
+        "dependencies": {
+          "Gapotchenko.FX": "2026.8.3",
+          "Gapotchenko.FX.Collections": "2026.8.3"
+        }
       },
       "Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime": {
         "type": "Transitive",
@@ -32,13 +102,13 @@
       },
       "ThrottleDebounce": {
         "type": "Transitive",
-        "resolved": "3.0.0-beta6",
-        "contentHash": "hLr071LwvbfwNvjsnEb5FP7BNnmu4qG6++ZHAdVEaLCv01BQ9m3G1PLKv/C8DPJ9hFcs+3EUNh+c9/Lg459HIw=="
+        "resolved": "3.0.0",
+        "contentHash": "TOzvjaCJ3GVUGceYm1uvvibDCOiXyj4f2kUAr9RPdWG8xpgd0jtVqgX8nNEj+zWg/AFR4lRNh28sMefm5qI6Tg=="
       },
       "Unfucked": {
         "type": "Transitive",
-        "resolved": "0.0.1-beta.48",
-        "contentHash": "Cs2SNUfC+vJ7rj//ucEVFoIhvR6NxRJ2niGD32UmUxh9ZVcxIPaYfZu1wEfgvDnNWxQQJ46pVF+Hwy4WKatcLQ=="
+        "resolved": "0.0.1-beta.53",
+        "contentHash": "cn/CRmctaDM/gbQhynqxYF0NX0L7fV0dw5TvcqAGhjhB9hNAHw7joP1h/qV+hhl1b1TC0UkfS8JcaysQpBj+VA=="
       },
       "Unfucked.Caching": {
         "type": "Transitive",
@@ -47,24 +117,24 @@
       },
       "Unfucked.HTTP": {
         "type": "Transitive",
-        "resolved": "0.0.1-beta.31",
-        "contentHash": "ui1dSqAk1ikK9Y2IRCFswYOx6mXVQEUqauz+kgbFDlvdnnsgmklxcSDywQiCl3ujSEAUachUqvW84jsbbHQYzA==",
+        "resolved": "0.0.1-beta.33",
+        "contentHash": "EhS1b26NamzYMzq+hy67jvWYXxm1EM2Bw6zojABZG664UWkOPfg1mz8F13Usm7iDhSvaaGxzAIrpa5Vau/PRRg==",
         "dependencies": {
-          "Unfucked": "0.0.1-beta.47"
+          "Unfucked": "0.0.1-beta.50"
         }
       },
       "dependencies": {
         "type": "Project",
         "dependencies": {
-          "Unfucked": "[0.0.1-beta.48, )"
+          "Unfucked": "[0.0.1-beta.53, )"
         }
       },
       "nugetgalleryclient": {
         "type": "Project",
         "dependencies": {
-          "ThrottleDebounce": "[3.0.0-beta6, )",
+          "ThrottleDebounce": "[3.0.0, )",
           "Unfucked.Caching": "[0.0.1-beta.6, )",
-          "Unfucked.HTTP": "[0.0.1-beta.31, )"
+          "Unfucked.HTTP": "[0.0.1-beta.33, )"
         }
       }
     },

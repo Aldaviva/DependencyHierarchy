@@ -1,6 +1,5 @@
 using NuGetGalleryClient;
 using System.Text.Json;
-using Unfucked;
 
 namespace WorkspaceResolution.Services;
 

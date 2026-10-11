@@ -13,9 +13,9 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="ThrottleDebounce" Version="3.0.0-beta6" />
+        <PackageReference Include="ThrottleDebounce" Version="3.0.0" />
         <PackageReference Include="Unfucked.Caching" Version="0.0.1-beta.6" />
-        <PackageReference Include="Unfucked.HTTP" Version="0.0.1-beta.31" />
+        <PackageReference Include="Unfucked.HTTP" Version="0.0.1-beta.33" />
     </ItemGroup>
 
 </Project>
