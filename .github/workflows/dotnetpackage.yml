@@ -22,19 +22,16 @@ jobs:
 
     - name: Pack DependencyHierarchy
       run: dotnet pack DependencyHierarchy --no-restore --configuration Release
-
-    - name: Pack ProvidedDependencies
-      run: dotnet publish ProvidedDependencies --no-restore --runtime win-x64 --configuration Release -p:PublishSingleFile=true --self-contained false
-
-    - name: Pack WorkspaceResolution
-      run: dotnet publish WorkspaceResolution --no-restore --runtime win-x64 --configuration Release -p:PublishSingleFile=true --self-contained false
-
-    - name: Upload DependencyHierarchy package
+    
+    - name: Upload DependencyHierarchy
       uses: actions/upload-artifact@v7
       with:
         name: DependencyHierarchy.nupkg
         path: DependencyHierarchy/bin/Release/*.*nupkg
         if-no-files-found: error
+
+    - name: Pack ProvidedDependencies
+      run: dotnet publish ProvidedDependencies --no-restore --runtime win-x64 --configuration Release -p:PublishSingleFile=true --self-contained false
 
     - name: Upload ProvidedDependencies
       uses: actions/upload-artifact@v7
@@ -43,9 +40,12 @@ jobs:
         path: ProvidedDependencies/bin/Release/net10.0/win-x64/publish/ProvidedDependencies.exe
         if-no-files-found: error
 
-    - name: Upload package
+    - name: Pack WorkspaceResolution
+      run: dotnet publish WorkspaceResolution --no-restore --runtime win-x64 --configuration Release -p:PublishSingleFile=true --self-contained false
+
+    - name: Upload WorkspaceResolution
       uses: actions/upload-artifact@v7
       with:
-        name: DependencyHierarchy.exe
-        path: DependencyHierarchy/bin/Release/net10.0/win-x64/DependencyHierarchy.exe
+        name: WorkspaceResolution.exe
+        path: WorkspaceResolution/bin/Release/net10.0/win-x64/publish/WorkspaceResolution.exe
         if-no-files-found: error
