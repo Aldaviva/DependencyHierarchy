@@ -9,7 +9,6 @@
         <OutputType>Exe</OutputType>
         <PackAsTool>true</PackAsTool>
         <TargetFramework>net10.0</TargetFramework>
-        <!-- <RuntimeIdentifiers>win-x64;win-x86;win-arm64;linux-x64;linux-arm;linux-arm64;osx-x64;osx-arm64</RuntimeIdentifiers> -->
         <Product>Dependency Hierarchy</Product>
         <AssemblyTitle>.NET NuGet Package Dependency Hierarchy</AssemblyTitle>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -34,8 +33,7 @@
 
     <ItemGroup>
         <AdditionalFiles Include="ExceptionAdjustments.txt" />
-        <None Include="..\Readme.md" Pack="true" PackagePath="\" />
-        <None Include="icon.png" Pack="true" PackagePath="\" />
+        <None Include="..\Readme.md;icon.png" Pack="true" PackagePath="\" />
     </ItemGroup>
 
     <ItemGroup>
@@ -47,7 +45,7 @@
         <ProjectReference Include="..\Dependencies\Dependencies.csproj" />
     </ItemGroup>
 
-    <PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true' or '$(Configuration)' != 'Debug'">
+    <PropertyGroup Condition="'$(CI)' == 'true' or '$(Configuration)' != 'Debug'">
         <ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
     </PropertyGroup>
 

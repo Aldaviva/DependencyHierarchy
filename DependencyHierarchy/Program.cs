@@ -1,6 +1,6 @@
 using Dependencies;
+using System.Diagnostics;
 using System.Text;
-using Unfucked;
 
 namespace DependencyHierarchy;
 
@@ -9,12 +9,12 @@ internal static class Program {
     private static readonly StringComparer STRING_COMPARER = StringComparer.OrdinalIgnoreCase;
 
     private static string resetColor => OPTIONS.noColor ? string.Empty : ConsoleControl.ResetColor;
-    private static string nameColor => OPTIONS.noColor ? string.Empty : ConsoleControl.Color(ConsoleColor.Blue, ConsoleColor.Black);
-    private static string transitiveNameColor => OPTIONS.noColor ? string.Empty : ConsoleControl.Color(ConsoleColor.DarkBlue, ConsoleColor.Black);
-    private static string filteredNameColor => OPTIONS.noColor ? string.Empty : ConsoleControl.Color(ConsoleColor.Magenta, ConsoleColor.Black);
-    private static string versionColor => OPTIONS.noColor ? string.Empty : ConsoleControl.Color(ConsoleColor.Green, ConsoleColor.Black);
-    private static string transitiveVersionColor => OPTIONS.noColor ? string.Empty : ConsoleControl.Color(ConsoleColor.DarkGreen, ConsoleColor.Black);
-    private static string unusedVersionColor => OPTIONS.noColor ? string.Empty : ConsoleControl.Color(ConsoleColor.DarkGray, ConsoleColor.Black);
+    private static string nameColor => OPTIONS.noColor ? string.Empty : ConsoleControl.Color(ConsoleColor.Blue);
+    private static string transitiveNameColor => OPTIONS.noColor ? string.Empty : ConsoleControl.Color(ConsoleColor.DarkBlue);
+    private static string filteredNameColor => OPTIONS.noColor ? string.Empty : ConsoleControl.Color(ConsoleColor.Magenta);
+    private static string versionColor => OPTIONS.noColor ? string.Empty : ConsoleControl.Color(ConsoleColor.Green);
+    private static string transitiveVersionColor => OPTIONS.noColor ? string.Empty : ConsoleControl.Color(ConsoleColor.DarkGreen);
+    private static string unusedVersionColor => OPTIONS.noColor ? string.Empty : ConsoleControl.Color(ConsoleColor.DarkGray);
     private static string warningColor => OPTIONS.noColor ? string.Empty : ConsoleControl.Color(ConsoleColor.Yellow, ConsoleColor.Black);
 
     private static readonly Options OPTIONS;
@@ -28,6 +28,11 @@ internal static class Program {
     }
 
     public static async Task<int> Main() {
+        if (!OPTIONS.noRestoration && await Process.ExecFile("dotnet", "restore", OPTIONS.projectDir) is { ExitCode: not 0 } restore) {
+            ConsoleControl.WriteLine($"Failed to restore {OPTIONS.projectDir}: {restore.StdOut}", ConsoleColor.DarkRed);
+            return restore.ExitCode;
+        }
+
         IReadOnlyCollection<Dependency> dependencies;
         try {
             dependencies = await DependencyLister.listDependencies(OPTIONS.projectDir);
@@ -42,15 +47,14 @@ internal static class Program {
         Console.Write(printDependencies(dependencies).ToString());
         return 0;
 
-        static void showFileNotFoundError(string path) => ConsoleControl.WriteLine($"Path {path} not found. " +
-            "Try restoring the project first using Visual Studio or 'dotnet restore'.", ConsoleColor.DarkRed);
+        static void showFileNotFoundError(string path) =>
+            ConsoleControl.WriteLine($"Path {path} not found. Try restoring the project first using Visual Studio or 'dotnet restore'.", ConsoleColor.DarkRed);
     }
 
     private static StringBuilder printDependencies(IEnumerable<Dependency> allDependencies) {
         StringBuilder tree = new();
 
-        foreach (Dependency intransitiveDependency in allDependencies.Where(static dependency => !dependency.isTransitive)
-                     .OrderBy(static dependency => dependency.name, STRING_COMPARER)) {
+        foreach (Dependency intransitiveDependency in allDependencies.Where(dependency => !dependency.isTransitive).OrderBy(dependency => dependency.name, STRING_COMPARER)) {
             tree.Append(printDependencyRecursively(intransitiveDependency));
         }
 
@@ -66,8 +70,7 @@ internal static class Program {
                     branch.AppendLine(serializeDependency(depth, dependency, desiredVersion));
                 }
             } else {
-                foreach (KeyValuePair<Dependency, string> transitiveDependency in
-                         dependency.dependencies.OrderBy(static dependency => dependency.Key.name, STRING_COMPARER)) {
+                foreach (KeyValuePair<Dependency, string> transitiveDependency in dependency.dependencies.OrderBy(dependency => dependency.Key.name, STRING_COMPARER)) {
                     StringBuilder subBranch = printDependencyRecursively(transitiveDependency.Key, transitiveDependency.Value, depth + 1);
                     if (subBranch.Length != 0 || isMatchOrNoFiltering) {
                         if (branch.Length == 0) {

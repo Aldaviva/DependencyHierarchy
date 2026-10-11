@@ -1,7 +1,7 @@
 using DotNet.Globbing;
 using McMaster.Extensions.CommandLineUtils;
+using System.Reflection;
 using System.Text.RegularExpressions;
-using Unfucked;
 
 namespace DependencyHierarchy;
 
@@ -27,12 +27,17 @@ public class Options {
     [Option("--no-color", "Disable output text colors.", CommandOptionType.NoValue)]
     public bool noColor { get; set; } = false;
 
+    [Option("--no-restore", "Skip restoring project before analyzing dependencies.", CommandOptionType.NoValue)]
+    public bool noRestoration { get; set; } = false;
+
     public static Options? parse(string[]? args = null) {
-        var optionsParser = new CommandLineApplication<Options> {
+        using CommandLineApplication<Options> optionsParser = new() {
+            FullName                     = "DependencyHierarchy",
             UnrecognizedArgumentHandling = UnrecognizedArgumentHandling.Throw,
             Description                  = "Show hierarchy of transitive NuGet package dependencies in a C# project, like Eclipse m2e or 'npm ls' do."
         };
         optionsParser.Conventions.UseDefaultConventions();
+        optionsParser.VersionOptionFromAssemblyAttributes("-v|--version", Assembly.GetEntryAssembly() ?? typeof(Options).Assembly);
         optionsParser.ExtendedHelpText =
             $"""
 
@@ -54,7 +59,14 @@ public class Options {
             parsed.projectDir = Path.GetDirectoryName(parsed.projectDir)!;
         }
 
-        return optionsParser.OptionHelp?.HasValue() ?? false ? null : parsed;
+        if (optionsParser.IsShowingInformation) {
+            return null;
+        } else if (optionsParser.GetValidationResult()?.ErrorMessage is {} validationError) {
+            Console.WriteLine(validationError);
+            return null;
+        } else {
+            return parsed;
+        }
     }
 
 }

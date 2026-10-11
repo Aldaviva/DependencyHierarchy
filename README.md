@@ -13,9 +13,10 @@ Command-line tool that shows and filters a tree of a .NET project's effective Nu
 - [Usage](#usage)
     - [Version conflict highlighting](#version-conflict-highlighting)
 - [Options](#options)
-    - [Filter to only show one package](#filter-to-only-show-one-package)
+    - [Filter to only show specific packages](#filter-to-only-show-specific-packages)
     - [Project directory](#project-directory)
-    - [Disable text colors](#disable-text-colors)
+    - [Text colors](#text-colors)
+    - [Project restoration](#project-restoration)
 - [Acknowledgements](#acknowledgements)
 
 <!-- /MarkdownTOC -->
@@ -23,7 +24,7 @@ Command-line tool that shows and filters a tree of a .NET project's effective Nu
 ![Screenshot](https://raw.githubusercontent.com/Aldaviva/DependencyHierarchy/master/.github/images/screenshot1.png)
 
 ## Prerequisites
-- [.NET Runtime 6 or later](https://dotnet.microsoft.com/en-us/download/dotnet)
+- [.NET SDK 10 or later](https://dotnet.microsoft.com/download)
 - A .NET project's source code you want to inspect
 
 ## Installation
@@ -43,11 +44,6 @@ dotnet tool update --global deps
     ```ps1
     cd mysolution/myproject/
     ```
-1. If you haven't restored this project since changing its settings, cleaning, or cloning it, then restore its depedencies to ensure that `obj/project.assets.json` is up-to-date.
-    ```ps1
-    dotnet restore
-    ```
-    Opening or building the project in Visual Studio or building it with `dotnet build` will also restore it automatically. This tool does not automatically restore your project for you, so that you can specify [all the options to `dotnet restore`](https://learn.microsoft.com/en-us/dotnet/core/tools/dotnet-restore#options) which you need.
 1. Run the `deps` tool.
     ```ps1
     deps
@@ -79,7 +75,7 @@ MailKit : 4.5.0
 In the above example, a [project](https://github.com/Aldaviva/mailsender-cs/tree/master/MailSender-NetCore) depends on [`MailKit`](https://www.nuget.org/packages/MailKit), which transitively depends on [`BouncyCastle.Cryptography`](https://www.nuget.org/packages/BouncyCastle.Cryptography/). At the time, the latest version of `MailKit` depended on version 2.3.0 of `BouncyCastle.Cryptography`, which is vulnerable to [several](https://github.com/advisories/GHSA-8xfc-gm6g-vgpv) [security](https://github.com/advisories/GHSA-m44j-cfrm-g8qc) [issues](https://github.com/advisories/GHSA-v435-xc8x-wvr9). To resolve these, the newer, fixed 2.3.1 version of `BouncyCastle.Cryptography` was added as a direct, top-level dependency of the project. Doing so [overrode](https://learn.microsoft.com/en-us/nuget/concepts/dependency-resolution#direct-dependency-wins) the version that `MailKit` transitively depended upon, forcing `MailKit` to use the fixed version. This tool highlights the version conflict and how it was resolved.
 
 ## Options
-### Filter to only show one package
+### Filter to only show specific packages
 By default, the output shows all dependencies of the project. To only show one package and its dependents, while hiding all unrelated packages, pass the `--filter` or `-f` option followed by the package name as the argument. This can help you figure out why a specific package is in your project. Filters are always case insensitive.
 ```ps1
 deps --filter HidClient
@@ -105,17 +101,26 @@ By default, this tool looks for a .NET project (that contains an `obj` subdirect
     ```ps1
     cd mysolution/myproject/
     ```
-- Specify the project directory (absolute or relative to the current working directory) as a command-line argument:
+- Specify either the project directory or file (absolute or relative to the current working directory) as a command-line argument:
     ```ps1
     deps mysolution/myproject/
     ```
+    ```ps1
+    deps mysolution/myproject/myproject.csproj
+    ```
 
-### Disable text colors
+### Text colors
 By default, the output text is colored to make it easier to distinguish different package names, versions, and conflict highlights. To disable this coloring and not print any ANSI escape sequences, for example if you want to process the output in a text editor or CI build tool, you can pass the `--no-color` option.
 ```ps1
 deps --no-color
 ```
 This program will also attempt to automatically disable color output if the console doesn't support it, but this argument allows you to force it off if the heuristic fails.
+
+### Project restoration
+By default, the project is automatically restored before its dependencies are analyzed, so that `obj/project.assets.json` is guaranteed to be up-to-date. To disable this restoration, for example because you know it was restored recently or you need to restore with special arguments like `--locked-mode` or `--runtime`, you can pass the `--no-restore` option.
+```ps1
+deps --no-restore
+```
 
 ## Acknowledgements
 - [Eclipse m2e](https://eclipse.dev/m2e/) for implementing this essential functionality a very long time ago in a GUI, better than any other IDE or tool ever has
