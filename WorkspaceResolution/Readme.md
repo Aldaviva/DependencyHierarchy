@@ -68,7 +68,7 @@ Overall, Microsoft does not seem to understand or take this problem seriously, p
     - are transitive in SDK-style dependent projects, regardless of which frameworks they target. It is intransitive in older Framework-only, non-SDK-style dependent projects. The project type of the dependency package is irrelevant.
     - fail to solve transitive package version resolution that should be solvable, so all dependencies must use exact versions like `[1.0.0]` instead of the default greater than or equal to behavior of `1.0.0`, which is `[1.0.0,)` or `≥1.0.0`.
     - require frequent manual restorations to make Visual Studio stop throwing warnings when the dependency is in a different solution.
-2. You may already be using it in your package projects, but if not, enabling `GeneratePackageOnBuild` makes development faster by quickly updating dependents. Otherwise, if you want to avoid any package project changes, you can also pack other ways, such as adding this property to a user-wide MSBuild props file, running `dotnet pack`, or assigning a keyboard shortcut to `Build.Packselection`.
+2. You may already be using it in your package projects, but if not, enabling `GeneratePackageOnBuild` makes development faster by quickly updating dependents. Otherwise, if you want to avoid any package project changes, you can also pack other ways, such as adding this property to a user-wide MSBuild `props` file, running `dotnet pack`, or assigning a keyboard shortcut to `Build.Packselection`.
 
 Workspace Resolution automates the local folder `PackageReference` technique to avoid changing any project files, breaking other cloners, or breaking transitive dependencies.
 
@@ -121,6 +121,10 @@ This project automates technique 5 to get update propagation from NuGet packages
 
 ### Disable Workspace Resolution
 If you want to skip Workspace Resolution for a specific project or build, you can set the `WorkspaceResolution` property to `false` in a project file, `-p` argument, or a `props` file for a directory, user, or computer.
+
+```ps1
+dotnet pack -p:WorkspaceResolution=false
+```
 
 ### Change local NuGet package source
 By default, a new local NuGet package source folder is added at `~\.nuget\local`. Packed dependency package `nupkg` and `snupkg` files are copied here so that the NuGet client can find them and copy them to `~\.nuget\packages` while restoring dependent projects.

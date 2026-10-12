@@ -90,9 +90,13 @@ public sealed class NuGetGalleryService: IDisposable {
         return (packages: response["data"]?.Deserialize<IReadOnlyList<PackageVersion>>() ?? [], totalPackages: response["totalHits"]!.GetValue<int>());
     }
 
-    /*private static void test(object queryParams) {
-        queryParams.GetType().GetProperties().
-    }*/
+    public async Task<Stream> downloadPackage(PackageVersion package) {
+        return await http.Target(await flatContainerUrl.Value)
+            .Path("{name}/{version}/{name}.{version}.nupkg")
+            .ResolveTemplate("name", package.name.ToLowerInvariant())
+            .ResolveTemplate("version", package.version.ToLowerInvariant())
+            .Get<Stream>();
+    }
 
     public void Dispose() {
         if (disposeHttpClient) {

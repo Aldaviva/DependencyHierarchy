@@ -7,17 +7,18 @@ public static class MsBuildService {
 
     public static uint killProcessesWithTaskLibraryLoaded(string libraryFilename) {
         uint processesKilled = 0;
-        foreach (var msbuildProcess in Process.GetProcessesByName("msbuild")) {
-            using (msbuildProcess) {
+        foreach (var processes in ((string[]) ["msbuild", "dotnet"]).SelectMany(Process.GetProcessesByName)) {
+            using (processes) {
                 try {
-                    bool shouldKill = msbuildProcess
-                        .ReadEnvironmentVariables()["MSBUILD_TASKS"]? // from Unfucked.BuildInfoGenerator.GenerateBuildInfo
+                    bool shouldKill = processes
+                        .ReadEnvironmentVariables()
+                        .GetValueOrDefault("MSBUILD_TASKS")? // from Unfucked.BuildInfoGenerator.GenerateBuildInfo
                         .Split(';')
                         .Contains(libraryFilename, StringComparer.OrdinalIgnoreCase) ?? false;
 
                     if (shouldKill) {
-                        string message = $"Killed {msbuildProcess.ProcessName}:{msbuildProcess.Id} because it held a filesystem lock on {libraryFilename}";
-                        msbuildProcess.Kill();
+                        string message = $"Killed {processes.ProcessName}:{processes.Id} because it held a filesystem lock on {libraryFilename}";
+                        processes.Kill();
                         processesKilled++;
                         Console.WriteLine(message);
                     }

@@ -9,7 +9,7 @@
         <RollForward>latestMajor</RollForward>
         <LangVersion>latest</LangVersion>
         <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
-        <Version>0.1.0</Version>
+        <Version>0.1.1</Version>
         <Authors>Ben Hutchison</Authors>
         <Copyright>© 2026 $(Authors)</Copyright>
         <Company>$(Authors)</Company>
@@ -29,7 +29,6 @@
         <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="5.1.0" />
         <PackageReference Include="NuGet.Frameworks" Version="7.9.0" />
         <PackageReference Include="NuGet.Versioning" Version="7.9.0" />
-        <PackageReference Include="Unfucked" Version="0.0.1-beta.53" />
     </ItemGroup>
 
     <ItemGroup>

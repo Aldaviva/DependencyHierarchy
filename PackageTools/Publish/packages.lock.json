@@ -1,0 +1,54 @@
+{
+  "version": 2,
+  "dependencies": {
+    "net10.0": {
+      "ThrottleDebounce": {
+        "type": "Transitive",
+        "resolved": "3.0.0",
+        "contentHash": "TOzvjaCJ3GVUGceYm1uvvibDCOiXyj4f2kUAr9RPdWG8xpgd0jtVqgX8nNEj+zWg/AFR4lRNh28sMefm5qI6Tg=="
+      },
+      "Unfucked.Caching": {
+        "type": "Transitive",
+        "resolved": "0.0.1-beta.6",
+        "contentHash": "sM29d8zoe+O0Vv6Q5JJmnRgL0u50xJ34zjkZdLB8rayKAo/pFn7xuLHV3hzMHR52BqVQT/GVGGgkp4Xv0cIpOw=="
+      },
+      "Unfucked.HTTP": {
+        "type": "Transitive",
+        "resolved": "0.0.1-beta.33",
+        "contentHash": "EhS1b26NamzYMzq+hy67jvWYXxm1EM2Bw6zojABZG664UWkOPfg1mz8F13Usm7iDhSvaaGxzAIrpa5Vau/PRRg==",
+        "dependencies": {
+          "Unfucked": "0.0.1-beta.50"
+        }
+      },
+      "nugetgalleryclient": {
+        "type": "Project",
+        "dependencies": {
+          "ThrottleDebounce": "[3.0.0, )",
+          "Unfucked": "[0.0.1-beta.53, )",
+          "Unfucked.Caching": "[0.0.1-beta.6, )",
+          "Unfucked.HTTP": "[0.0.1-beta.33, )"
+        }
+      },
+      "PackageTools.Common": {
+        "type": "Project",
+        "dependencies": {
+          "McMaster.Extensions.CommandLineUtils": "[5.1.0, )",
+          "NuGetGalleryClient": "[1.0.0, )",
+          "Unfucked": "[0.0.1-beta.54, )"
+        }
+      },
+      "McMaster.Extensions.CommandLineUtils": {
+        "type": "CentralTransitive",
+        "requested": "[5.1.0, )",
+        "resolved": "5.1.0",
+        "contentHash": "YceiKmxdsBrlkAJpmJ2N8XkLyAH01xLsm4VLfjNp5MvtAom2wflZtEBz3CLMQret6Z7jSh3oBO1ULF1Is0tNxA=="
+      },
+      "Unfucked": {
+        "type": "CentralTransitive",
+        "requested": "[0.0.1-beta.54, )",
+        "resolved": "0.0.1-beta.54",
+        "contentHash": "yVSROlKIQTN5rmF25KZqPrxxTHoO7FMT05TnXMS5WOo7zlzYo/noxrMkNJQAszueF7rlIHa8mwvb+V+mx8g69g=="
+      }
+    }
+  }
+}

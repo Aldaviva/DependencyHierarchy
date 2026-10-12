@@ -20,16 +20,15 @@
         "resolved": "7.9.0",
         "contentHash": "r4sZuVpVqwSBLe4qYDrnpScqdyctlRXg0HSF5OoCGkeBc8b+o8BBYHuI/u1RoWYX78PbieijU13TBt71/Xf3lw=="
       },
-      "Unfucked": {
-        "type": "Direct",
-        "requested": "[0.0.1-beta.53, )",
-        "resolved": "0.0.1-beta.53",
-        "contentHash": "cn/CRmctaDM/gbQhynqxYF0NX0L7fV0dw5TvcqAGhjhB9hNAHw7joP1h/qV+hhl1b1TC0UkfS8JcaysQpBj+VA=="
-      },
       "ThrottleDebounce": {
         "type": "Transitive",
         "resolved": "3.0.0",
         "contentHash": "TOzvjaCJ3GVUGceYm1uvvibDCOiXyj4f2kUAr9RPdWG8xpgd0jtVqgX8nNEj+zWg/AFR4lRNh28sMefm5qI6Tg=="
+      },
+      "Unfucked": {
+        "type": "Transitive",
+        "resolved": "0.0.1-beta.54",
+        "contentHash": "MBUHhpuhwepRXPefr60jPhsulRNWWneR9RN6dqNEh3AnNO8c06UsDbc46STfm3lT2jEIeTNn/OnUXrOF40UvxA=="
       },
       "Unfucked.Caching": {
         "type": "Transitive",

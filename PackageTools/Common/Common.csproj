@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>library</OutputType>
+        <IsPackable>false</IsPackable>
+        <PackAsTool>false</PackAsTool>
+        <RestorePackagesWithLockFile>false</RestorePackagesWithLockFile>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="McMaster.Extensions.CommandLineUtils" />
+        <PackageReference Include="Unfucked" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Remove="..\Common\Common.csproj" />
+        <ProjectReference Include="..\..\NuGetGalleryClient\NuGetGalleryClient.csproj" />
+    </ItemGroup>
+
+</Project>

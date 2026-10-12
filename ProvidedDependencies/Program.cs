@@ -7,6 +7,7 @@ using ProvidedDependencies;
 using ProvidedDependencies.Data;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.IO.Compression;
 using System.Reflection;
 using System.Security;
 using System.Text;
@@ -71,14 +72,9 @@ Task<ProcessResult> projectPropertiesTask = Process.ExecFile("dotnet", "msbuild"
     "directorypackagespropspath"
 ]).Join(','));
 
-XDocument projectDoc;
-string    projectFileContents;
-await using (FileStream projectFileStream = File.OpenRead(csprojFile)) {
-    using StreamReader projectFileReader = new(projectFileStream, utf8);
-    projectFileContents = await projectFileReader.ReadToEndAsync();
-    projectDoc          = XDocument.Parse(projectFileContents, LoadOptions.None);
-}
-bool isAspNetCoreProject = projectDoc.Root!.Attribute("Sdk")?.Value.Equals("Microsoft.NET.Sdk.Web", StringComparison.OrdinalIgnoreCase) ?? false;
+string    projectFileContents = await File.ReadAllTextAsync(csprojFile);
+XDocument projectDoc          = XDocument.Parse(projectFileContents, LoadOptions.None);
+bool      isAspNetCoreProject = projectDoc.Root!.Attribute("Sdk")?.Value.Equals("Microsoft.NET.Sdk.Web", StringComparison.OrdinalIgnoreCase) ?? false;
 
 string propsFilename       = outputFile.Value() ?? Path.Combine(csprojDir, DEFAULT_PROPS_FILENAME);
 string expectedPropsImport = Path.GetRelativePath(csprojDir, propsFilename);
@@ -238,22 +234,39 @@ async Task<IDictionary<string, PackageVersion>> fetchReleaseVersionNumbers(bool 
     .ToDictionary(version => version.version);
 
 async Task<ISet<string>?> listRuntimeProvidedPackages(NuGetFramework tfm, IDictionary<string, PackageVersion> availableRuntimeVersions) {
+    const string FRAMEWORK_LIST_FILENAME = "FrameworkList.xml";
     if (tfm.Version.Float(NuGetVersionFloatBehavior.Patch).FindBestMatch(availableRuntimeVersions.Select(pair => pair.Value.nuGetVersion)) is {} bestMatch) {
-        PackageVersion refPackageToFetch = availableRuntimeVersions[bestMatch.OriginalVersion!];
+        PackageVersion refPackageToFetch = availableRuntimeVersions[bestMatch.ToNormalizedString()];
         string         appRefDir         = Path.Combine(userPackageCacheDir, refPackageToFetch.name, refPackageToFetch.version);
-        if (!Directory.Exists(appRefDir)) {
-            string tempDownloaderProjectDir = Directory.CreateTempDir();
-            Console.WriteLine("Downloading .NET runtime reference assembly {0} {1}...", refPackageToFetch.name, refPackageToFetch.version);
+        Stream         frameworkListStream;
+        try {
+            frameworkListStream = File.OpenRead(Path.Combine(appRefDir, "data", FRAMEWORK_LIST_FILENAME));
+        } catch (IOException) {
+            string cachedFrameworkListFilePath = Path.Combine(userPackageCacheDir, refPackageToFetch.name, "FrameworkLists for ProvidedDependencies",
+                refPackageToFetch.version, FRAMEWORK_LIST_FILENAME);
             try {
-                await Process.ExecFile("nuget", "install", refPackageToFetch.name, "-Version", refPackageToFetch.version, "-SolutionDirectory", tempDownloaderProjectDir);
-                // nuget exits with 1 because there is no project in that empty directory
-            } finally {
-                Directory.TryDelete(tempDownloaderProjectDir);
+                frameworkListStream = File.OpenRead(cachedFrameworkListFilePath);
+            } catch (IOException) {
+                Console.Write("Downloading .NET runtime reference assembly {0} {1}... ", refPackageToFetch.name, refPackageToFetch.version);
+                await using Stream     packageStream            = await nuGetGallery.downloadPackage(refPackageToFetch);
+                await using ZipArchive packageZip               = await ZipArchive.CreateAsync(packageStream, ZipArchiveMode.Read, false, null);
+                ZipArchiveEntry        frameworkDataFileInZip   = packageZip.GetEntry(Path.Dos2UnixSlashes(Path.Combine("data", FRAMEWORK_LIST_FILENAME)))!;
+                await using Stream     frameworkDataStreamInZip = await frameworkDataFileInZip.OpenAsync();
+                MemoryStream           frameworkDataFileBuffer  = new((int) frameworkDataFileInZip.Length);
+                await frameworkDataStreamInZip.CopyToAsync(frameworkDataFileBuffer);
+                frameworkDataFileBuffer.Position = 0;
+                Directory.CreateDirectory(Path.GetDirectoryName(cachedFrameworkListFilePath)!);
+                await using FileStream cachedAppRefFrameworkListStream = File.Open(cachedFrameworkListFilePath, FileMode.CreateNew, FileAccess.Write);
+                await frameworkDataFileBuffer.CopyToAsync(cachedAppRefFrameworkListStream);
+                frameworkDataFileBuffer.Position = 0;
+                frameworkListStream              = frameworkDataFileBuffer;
+                Console.WriteLine("done.");
             }
         }
-        await using FileStream frameworkListStream = File.OpenRead(Path.Combine(appRefDir, "data", "FrameworkList.xml"));
-        FrameworkFileList      frameworkList       = (FrameworkFileList) frameworkListDeserializer.Deserialize(frameworkListStream)!;
-        return frameworkList.files.Select(file => file.assemblyName).ToHashSet();
+        await using (frameworkListStream) {
+            FrameworkFileList frameworkList = (FrameworkFileList) frameworkListDeserializer.Deserialize(frameworkListStream)!;
+            return frameworkList.files.Select(file => file.assemblyName).ToHashSet();
+        }
     } else {
         return null;
     }
@@ -289,7 +302,7 @@ static string? getCsprojFile(string? csprojOrDir) {
 
 internal static partial class Program {
 
-    [GeneratedRegex(@"(?=</Project\s*>\s*$)", RegexOptions.IgnoreCase)]
+    [GeneratedRegex(@"(?=</\s*Project\s*>\s*$)", RegexOptions.IgnoreCase)]
     private static partial Regex projectEndTag { get; }
 
     [GeneratedRegex(@"(?<=\n)[ \t]+?(?=\S)")]
