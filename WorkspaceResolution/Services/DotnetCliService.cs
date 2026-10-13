@@ -20,8 +20,7 @@ public static class DotnetCliService {
         "repositoryurl"
     ];
 
-    public static async Task restoreOpenVisualStudioProjectsThatDependOn(string packageName, string? excludedSolutionFile, bool buildAfterRestore, string localPackageDir,
-                                                                         CancellationToken cancellationToken = default) {
+    public static async Task restoreOpenVisualStudioProjectsThatDependOn(string packageName, string? excludedSolutionFile, bool buildAfterRestore, CancellationToken cancellationToken = default) {
         excludedSolutionFile = excludedSolutionFile is { Length: not 0 } ? Path.GetFullPath(excludedSolutionFile) : null;
 
         ParallelOptions parallelOptions = new() { CancellationToken = cancellationToken, MaxDegreeOfParallelism = Environment.ProcessorCount };
@@ -33,17 +32,15 @@ public static class DotnetCliService {
 
             if (!dependencies.Any(dep => dep.name.Equals(packageName, CASE_INSENSITIVE))) return; // project doesn't depend on package
 
-            Stopwatch     restoreStopwatch = Stopwatch.StartNew();
-            ProcessResult restoreResult    = await restore(project, localPackageDir);
-            restoreStopwatch.Stop();
-
-            if (restoreResult.ExitCode != 0) {
-                Console.WriteLine("Failed to restore {0}: exit code {1}", project.absoluteFilename, restoreResult.ExitCode);
-                Console.WriteLine(restoreResult.StdOut);
-                Console.WriteLine(restoreResult.StdErr);
+            Stopwatch restoreStopwatch = Stopwatch.StartNew();
+            try {
+                (await restore(project)).EnsureSuccessful($"Failed to restore {project.absoluteFilename}", ProcessResult.Details.NoCommandLine);
+            } catch (ProcessException e) {
+                Console.WriteLine(e.Message);
                 return;
             }
 
+            restoreStopwatch.Stop();
             Console.WriteLine("Restored {0} because it depends on {1} (in {2:N0} ms).", project.absoluteFilename, packageName, restoreStopwatch.ElapsedMilliseconds);
             if (buildAfterRestore && await isPackable(project)) {
                 await build(project);
@@ -52,15 +49,16 @@ public static class DotnetCliService {
         });
     }
 
-    private static async Task<ProcessResult> restore(CsProject project, string packageSource) =>
+    private static async Task<ProcessResult> restore(CsProject project /*, string packageSource*/) =>
         await Process.ExecFile(DOTNET,
             "restore",
             project.absoluteFilename,
             "-v:q",
             "--force",
             "--force-evaluate",
-            "--source",
-            Path.GetFullPath(packageSource));
+            "--source", "https://0.0.0.0" // does this help?
+            /*, "--source",
+            Path.GetFullPath(packageSource)*/);
 
     private static async Task<int> build(CsProject project) =>
         (await Process.ExecFile(DOTNET,
@@ -70,50 +68,32 @@ public static class DotnetCliService {
             "--no-restore"))
         .ExitCode;
 
-    public static async Task<IEnumerable<(string url, bool isEnabled)>> listPackageSources(CancellationToken cancellationToken = default) =>
-        (await Process.ExecFile(DOTNET, [
-            "nuget",
-            "list",
-            "source",
-            "--format", "short"
-        ], cancellationToken: cancellationToken))
-        .StdOut
-        .Trim()
-        .Split('\n')
-        .Select(static line => {
-            string[] lineSplit = line.Trim().Split(' ', 2);
-            return (url: lineSplit[1], isEnabled: lineSplit[0] == "E");
-        });
+    // This is technically only in the NuGet CLI program, not dotnet, so maybe it deserves its own service.
+    /// <exception cref="ProcessException"></exception>
+    public static async Task installLocalPackage(string packageFilePath, string destinationDirectory, CancellationToken cancellationToken = default) =>
+        (await Process.ExecFile("nuget", ["add", packageFilePath, "-Source", destinationDirectory, "-Expand", "-NonInteractive"], cancellationToken: cancellationToken))
+        .EnsureSuccessful("Installation failed to copy package to local cache", ProcessResult.Details.All);
 
-    /// <exception cref="ApplicationException"></exception>
-    public static async Task addPackageSource(string name, string url, CancellationToken cancellationToken = default) {
-        ProcessResult addResult = await Process.ExecFile(DOTNET, [
-            "nuget",
-            "add",
-            "source", url,
-            "--name", name
-        ], cancellationToken: cancellationToken);
-
-        if (addResult.ExitCode != 0) {
-            throw new ApplicationException(addResult.StdOut + '\n' + addResult.StdErr) { Data = { { "exitCode", addResult.ExitCode } } };
-        }
-    }
+    /// <exception cref="ProcessException"></exception>
+    public static async Task<string> getPackageCacheDir(CancellationToken cancellationToken = default) =>
+        Path.GetFullPath((await Process.ExecFile("dotnet", ["nuget", "locals", "global-packages", "--list"], cancellationToken: cancellationToken))
+            .EnsureSuccessful(null, ProcessResult.Details.All).StdOut.TrimStart("global-packages: "));
 
     private static async Task<bool> isPackable(CsProject project) {
-        ProcessResult propertyResult = await Process.ExecFile(DOTNET,
+        (int exitCode, string stdOut) = await Process.ExecFile(DOTNET,
             "msbuild",
             project.absoluteFilename,
             "-getProperty:" + ((ReadOnlySpan<string>) [
                 "ispackable",
                 "istestproject",
                 "symbolpackageformat",
-                ..PACKAGE_PROPERTY_NAMES
+                .. PACKAGE_PROPERTY_NAMES
             ]).Join(','));
 
-        if (propertyResult.ExitCode != 0) return false;
+        if (exitCode != 0) return false;
 
         try {
-            IDictionary<string, string> projectProperties = JsonNode.Parse(propertyResult.StdOut)!["Properties"]!.AsObject()
+            IDictionary<string, string> projectProperties = JsonNode.Parse(stdOut)!["Properties"]!.AsObject()
                 .ToDictionary(static pair => pair.Key.ToLowerInvariant(), static pair => pair.Value!.GetValue<string>().EmptyToNull).Compact();
 
             return !"false".Equals(projectProperties.GetValueOrNull("ispackable"), CASE_INSENSITIVE) &&

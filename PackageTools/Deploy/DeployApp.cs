@@ -2,7 +2,7 @@ namespace PackageTools.Deploy;
 
 public class DeployApp: AbstractApp {
 
-    private static readonly UrlBuilder NUGET_GALLERY_PACKAGE_PAGE = new("https://www.nuget.org/packages/{name}/{version}");
+    private static readonly UrlBuilder NUGET_GALLERY_PACKAGE_PAGE = UrlBuilder.FromTemplate("https://www.nuget.org/packages/{name}/{version}");
 
     public static Task<int> Main() => CommandLineApplicationFactory.execute<DeployApp>("deploy", app =>
         app.Description = "Pack a project into a package and upload it to NuGet Gallery.");
@@ -43,14 +43,14 @@ public class DeployApp: AbstractApp {
             Console.WriteLine($"Installed {package.name} {package.version} to local package cache. Remember to `dotnet restore!` in dependent projects.");
             Console.WriteLine("Deploying to NuGet Gallery...");
 
-            foreach (string nugetPackageListCacheFile in Directory.EnumerateFiles(Path.Combine(localRepo, "NuGet", "v3-cache"), $"list_{package.name.ToLowerInvariant()}.dat",
-                         SearchOption.AllDirectories)) {
+            foreach (string nugetPackageListCacheFile in Directory.EnumerateFiles(Environment.ExpandEnvironmentVariables(@"%LOCALAPPDATA%\NuGet\v3-cache"),
+                         $"list_{package.name.ToLowerInvariant()}.dat", SearchOption.AllDirectories)) {
                 Files.Delete(nugetPackageListCacheFile);
             }
 
             (await Process.ExecFile("dotnet", ["nuget", "push", tempPackageFilePath, .. RemainingArguments])).EnsureSuccessful("Push failed");
 
-            Console.WriteLine($"Deployed {package.name} {package.version} to NuGet Gallery: {NUGET_GALLERY_PACKAGE_PAGE.ToUrl(package.name, package.version)}");
+            Console.WriteLine($"Deployed {package.name} {package.version} to NuGet Gallery: {NUGET_GALLERY_PACKAGE_PAGE.ToUrl(package.name, package.version).AbsoluteUri}");
         } finally {
             tempPackDir.Delete(true);
         }

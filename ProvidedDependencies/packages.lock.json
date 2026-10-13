@@ -28,7 +28,7 @@
       "Unfucked": {
         "type": "Transitive",
         "resolved": "0.0.1-beta.54",
-        "contentHash": "MBUHhpuhwepRXPefr60jPhsulRNWWneR9RN6dqNEh3AnNO8c06UsDbc46STfm3lT2jEIeTNn/OnUXrOF40UvxA=="
+        "contentHash": "thhGk7Bjw27YWC/YITjIp5psuvpvKa0H/qsOLXg4nOkC+aBBQNMO3TDUd6dr+Qlh+B83MDN53/KqsZxTNKW6xw=="
       },
       "Unfucked.Caching": {
         "type": "Transitive",
@@ -37,25 +37,25 @@
       },
       "Unfucked.HTTP": {
         "type": "Transitive",
-        "resolved": "0.0.1-beta.33",
-        "contentHash": "EhS1b26NamzYMzq+hy67jvWYXxm1EM2Bw6zojABZG664UWkOPfg1mz8F13Usm7iDhSvaaGxzAIrpa5Vau/PRRg==",
+        "resolved": "0.0.1-beta.34",
+        "contentHash": "X7UwBJLzErqxhnQqPTUzLQ8E2kuzwtfWqiaXOGXy8wr2PQ5D8nnmGgp+HBt6FhLiQ8yFc17H26wVWTZn72Fz3Q==",
         "dependencies": {
-          "Unfucked": "0.0.1-beta.50"
+          "Unfucked": "0.0.1-beta.54"
         }
       },
       "dependencies": {
         "type": "Project",
         "dependencies": {
-          "Unfucked": "[0.0.1-beta.53, )"
+          "Unfucked": "[0.0.1-beta.54, )"
         }
       },
       "nugetgalleryclient": {
         "type": "Project",
         "dependencies": {
           "ThrottleDebounce": "[3.0.0, )",
-          "Unfucked": "[0.0.1-beta.53, )",
+          "Unfucked": "[0.0.1-beta.54, )",
           "Unfucked.Caching": "[0.0.1-beta.6, )",
-          "Unfucked.HTTP": "[0.0.1-beta.33, )"
+          "Unfucked.HTTP": "[0.0.1-beta.34, )"
         }
       }
     },

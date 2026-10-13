@@ -14,19 +14,19 @@
       },
       "Unfucked.HTTP": {
         "type": "Transitive",
-        "resolved": "0.0.1-beta.33",
-        "contentHash": "EhS1b26NamzYMzq+hy67jvWYXxm1EM2Bw6zojABZG664UWkOPfg1mz8F13Usm7iDhSvaaGxzAIrpa5Vau/PRRg==",
+        "resolved": "0.0.1-beta.34",
+        "contentHash": "d4hZPxINV3CmiVDu65XrmjyPHYaa9b3DtAwW07va7tCk6yv5fq1Wd7V5oZX09Vh2h4Lkoci+N2v2EhzHQX1fnQ==",
         "dependencies": {
-          "Unfucked": "0.0.1-beta.50"
+          "Unfucked": "0.0.1-beta.54"
         }
       },
       "nugetgalleryclient": {
         "type": "Project",
         "dependencies": {
           "ThrottleDebounce": "[3.0.0, )",
-          "Unfucked": "[0.0.1-beta.53, )",
+          "Unfucked": "[0.0.1-beta.54, )",
           "Unfucked.Caching": "[0.0.1-beta.6, )",
-          "Unfucked.HTTP": "[0.0.1-beta.33, )"
+          "Unfucked.HTTP": "[0.0.1-beta.34, )"
         }
       },
       "PackageTools.Common": {
@@ -47,7 +47,7 @@
         "type": "CentralTransitive",
         "requested": "[0.0.1-beta.54, )",
         "resolved": "0.0.1-beta.54",
-        "contentHash": "yVSROlKIQTN5rmF25KZqPrxxTHoO7FMT05TnXMS5WOo7zlzYo/noxrMkNJQAszueF7rlIHa8mwvb+V+mx8g69g=="
+        "contentHash": "MdxY8BRKiLLDB1/vo5rdB3Tvt8PjZT9yttRcdlRPnUl3fH61jI5NLhtFb1btv1nmkHYOXV3WYjAHArg+IhxdQw=="
       }
     }
   }
