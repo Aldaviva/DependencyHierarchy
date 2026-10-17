@@ -15,7 +15,7 @@
       "Unfucked.HTTP": {
         "type": "Transitive",
         "resolved": "0.0.1-beta.34",
-        "contentHash": "d4hZPxINV3CmiVDu65XrmjyPHYaa9b3DtAwW07va7tCk6yv5fq1Wd7V5oZX09Vh2h4Lkoci+N2v2EhzHQX1fnQ==",
+        "contentHash": "PnnuYrl1Db1sKUSvbk4p6PoExEJVgEDPvybwhjMOAzY+VMGHNM0Fs/q7gnYzkENtxc3ebX3HtTKPPmJWuDuCsA==",
         "dependencies": {
           "Unfucked": "0.0.1-beta.54"
         }
@@ -47,7 +47,7 @@
         "type": "CentralTransitive",
         "requested": "[0.0.1-beta.54, )",
         "resolved": "0.0.1-beta.54",
-        "contentHash": "MdxY8BRKiLLDB1/vo5rdB3Tvt8PjZT9yttRcdlRPnUl3fH61jI5NLhtFb1btv1nmkHYOXV3WYjAHArg+IhxdQw=="
+        "contentHash": "OQc6BndY7n2x6MYUrq9PUeVSYoarX5Dlk69rciEhVgxh34iCJo9LFnbxNhYjP6sCkwgyuSIwFedaPi/Ofsitzg=="
       }
     }
   }

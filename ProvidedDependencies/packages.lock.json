@@ -28,7 +28,7 @@
       "Unfucked": {
         "type": "Transitive",
         "resolved": "0.0.1-beta.54",
-        "contentHash": "thhGk7Bjw27YWC/YITjIp5psuvpvKa0H/qsOLXg4nOkC+aBBQNMO3TDUd6dr+Qlh+B83MDN53/KqsZxTNKW6xw=="
+        "contentHash": "OQc6BndY7n2x6MYUrq9PUeVSYoarX5Dlk69rciEhVgxh34iCJo9LFnbxNhYjP6sCkwgyuSIwFedaPi/Ofsitzg=="
       },
       "Unfucked.Caching": {
         "type": "Transitive",
@@ -38,7 +38,7 @@
       "Unfucked.HTTP": {
         "type": "Transitive",
         "resolved": "0.0.1-beta.34",
-        "contentHash": "X7UwBJLzErqxhnQqPTUzLQ8E2kuzwtfWqiaXOGXy8wr2PQ5D8nnmGgp+HBt6FhLiQ8yFc17H26wVWTZn72Fz3Q==",
+        "contentHash": "PnnuYrl1Db1sKUSvbk4p6PoExEJVgEDPvybwhjMOAzY+VMGHNM0Fs/q7gnYzkENtxc3ebX3HtTKPPmJWuDuCsA==",
         "dependencies": {
           "Unfucked": "0.0.1-beta.54"
         }

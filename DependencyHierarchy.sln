@@ -30,6 +30,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Restore", "PackageTools\Res
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common", "PackageTools\Common\Common.csproj", "{339D4AA6-CCE7-43D9-94FD-23AF63AEC359}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LetsNuGet", "LetsNuGet\LetsNuGet.csproj", "{11CFBB5B-F192-4CA0-992D-73839D661893}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -76,6 +78,10 @@ Global
 		{339D4AA6-CCE7-43D9-94FD-23AF63AEC359}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{339D4AA6-CCE7-43D9-94FD-23AF63AEC359}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{339D4AA6-CCE7-43D9-94FD-23AF63AEC359}.Release|Any CPU.Build.0 = Release|Any CPU
+		{11CFBB5B-F192-4CA0-992D-73839D661893}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{11CFBB5B-F192-4CA0-992D-73839D661893}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{11CFBB5B-F192-4CA0-992D-73839D661893}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{11CFBB5B-F192-4CA0-992D-73839D661893}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

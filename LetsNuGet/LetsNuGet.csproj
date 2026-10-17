@@ -1,0 +1,35 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <OutputType>WinExe</OutputType>
+        <TargetFramework>net10.0-windows</TargetFramework>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <UseWPF>true</UseWPF>
+        <ApplicationIcon>favicon.ico</ApplicationIcon>
+        <ApplicationManifest>app.manifest</ApplicationManifest>
+        <RollForward>major</RollForward>
+        <RestorePackagesWithLockFile>true</RestorePackagesWithLockFile>
+        <DebugType>embedded</DebugType>
+        <SelfContained>false</SelfContained>
+
+        <Version>0.0.0</Version>
+        <AssemblyTitle>NuGet Gallery API Key Regenerator</AssemblyTitle>
+        <Product>Let's NuGet</Product>
+        <Authors>Ben Hutchison</Authors>
+        <Copyright>© 2026 $(Authors)</Copyright>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Content Include="favicon.ico" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="DarkNet" Version="2.3.0" />
+        <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="5.1.0" />
+        <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4258.31" />
+        <PackageReference Include="Unfucked" Version="0.0.1-beta.55" />
+    </ItemGroup>
+
+</Project>
