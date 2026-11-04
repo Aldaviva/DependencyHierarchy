@@ -28,8 +28,8 @@
     <ItemGroup>
         <PackageReference Include="DarkNet" Version="2.3.0" />
         <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="5.1.0" />
-        <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4258.31" />
-        <PackageReference Include="Unfucked" Version="0.0.1-beta.55" />
+        <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.4314.35" />
+        <PackageReference Include="Unfucked" Version="0.0.1-beta.60" />
     </ItemGroup>
 
 </Project>

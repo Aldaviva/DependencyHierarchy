@@ -16,16 +16,13 @@ public sealed partial class App {
         }
 
         MainWindow = new MainWindow(options.apiKeyName) {
-            Visibility    = Visibility.Hidden,
             ShowActivated = false,
-            ShowInTaskbar = false,
-            WindowState   = WindowState.Minimized
+            WindowState   = WindowState.Minimized,
+            ShowInTaskbar = false
         };
 
         MainWindow.Show();
         MainWindow.Hide();
-        MainWindow.WindowState   = WindowState.Normal;
-        MainWindow.ShowInTaskbar = true;
     }
 
     protected override void OnExit(ExitEventArgs e) {

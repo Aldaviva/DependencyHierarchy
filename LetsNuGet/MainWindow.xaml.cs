@@ -65,14 +65,16 @@ public sealed partial class MainWindow {
                     bool hasExistingAccount = JsonSerializer.Deserialize<bool>(await webview.ExecuteScriptAsync("""!!document.querySelector(".new-session-popup-v2sso");""" /*lang=javascript*/));
                     if (!hasExistingAccount) {
                         Console.WriteLine("Not already signed into an account, showing sign-in window");
-                        Visibility = Visibility.Visible;
+                        Show();
+                        WindowState   = WindowState.Normal;
+                        ShowInTaskbar = true;
                     } else {
                         Console.WriteLine("Already signed into an account, not showing sign-in window");
                     }
                     break;
 
                 case { Scheme: "https", Host: "www.nuget.org", AbsolutePath: "/account/apikeys" } u when u.QueryParams["forceApiKeys"] == "true":
-                    Visibility = Visibility.Hidden;
+                    Hide();
                     Console.WriteLine($"Clicking Regenerate button on the {apiKeyName} API key and waiting for the new value");
                     await webview.ExecuteScriptAsync("""
                         (apiKeyName => {

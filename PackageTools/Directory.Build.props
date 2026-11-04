@@ -24,9 +24,14 @@
         <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
         <Description>Improved version of `dotnet $(MSBuildProjectName.ToLowerInvariant())`</Description>
         <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <ApplicationIcon>..\..\WorkspaceResolution\ben.ico</ApplicationIcon>
         <NoWarn>$(NoWarn);NU1507</NoWarn>
     </PropertyGroup>
 
+    <ItemGroup>
+        <Content Include="..\..\WorkspaceResolution\ben.ico" />
+    </ItemGroup>
+    
     <ItemGroup>
         <ProjectReference Include="..\Common\Common.csproj" />
     </ItemGroup>

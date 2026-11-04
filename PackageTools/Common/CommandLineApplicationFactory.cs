@@ -11,7 +11,7 @@ public static class CommandLineApplicationFactory {
             UnrecognizedArgumentHandling = UnrecognizedArgumentHandling.StopParsingAndCollect
         };
         app.Conventions.UseDefaultConventions();
-        app.VersionOptionFromAssemblyAttributes("-v|--version", Assembly.GetEntryAssembly()!);
+        app.VersionOptionFromAssemblyAttributes("--version", Assembly.GetEntryAssembly()!); // -v conflicts with dotnet's verbosity option
 
         configure?.Invoke(app);
 
