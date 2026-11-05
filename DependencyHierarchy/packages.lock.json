@@ -16,13 +16,13 @@
       },
       "Unfucked": {
         "type": "Transitive",
-        "resolved": "0.0.1-beta.60",
-        "contentHash": "WPLvhQbSQN3EJxeB/GOFIeC8Z8Dl6iJu5N4SVk3YcNOOj5ZnJNnFA3qQ72/4KjJDarjyrzU3sHD7QyhBr4q7Tg=="
+        "resolved": "0.0.1-beta.61",
+        "contentHash": "+xzFudtaGmDvf26bepf95DZ9o9B4w+LXt3WAX3ob7KF0onMrhLX/FbDcwQPNLwvxga02tSYAPNQmlLaz09AO6Q=="
       },
       "dependencies": {
         "type": "Project",
         "dependencies": {
-          "Unfucked": "[0.0.1-beta.60, )"
+          "Unfucked": "[0.0.1-beta.61, )"
         }
       }
     }

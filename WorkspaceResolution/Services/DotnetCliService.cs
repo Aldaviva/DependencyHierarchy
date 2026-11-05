@@ -33,15 +33,10 @@ public static class DotnetCliService {
             if (!dependencies.Any(dep => dep.name.Equals(packageName, CASE_INSENSITIVE))) return; // project doesn't depend on package
 
             Stopwatch restoreStopwatch = Stopwatch.StartNew();
-            try {
-                (await restore(project)).EnsureSuccessful($"Failed to restore {project.absoluteFilename}", ProcessResult.Details.NoCommandLine);
-            } catch (ProcessException e) {
-                Console.WriteLine(e.Message);
-                return;
-            }
-
+            (await restore(project)).EnsureSuccessful($"Failed to restore {project.absoluteFilename}", ProcessResult.Details.All);
             restoreStopwatch.Stop();
             Console.WriteLine("Restored {0} because it depends on {1} (in {2:N0} ms).", project.absoluteFilename, packageName, restoreStopwatch.ElapsedMilliseconds);
+
             if (buildAfterRestore && await isPackable(project)) {
                 await build(project);
                 Console.WriteLine("Built {0} because it is a package.", project.absoluteFilename);
@@ -55,8 +50,8 @@ public static class DotnetCliService {
             project.absoluteFilename,
             "-v:q",
             "--force",
-            "--force-evaluate",
-            "--source", "https://0.0.0.0" // does this help?
+            "--force-evaluate"
+            /*"--source", "https://0.0.0.0"*/ // fake source causes restoration errors because NuGet client tries to check for vulnerability info using this unreachable URL
             /*, "--source",
             Path.GetFullPath(packageSource)*/);
 
@@ -67,12 +62,6 @@ public static class DotnetCliService {
             "-v:q",
             "--no-restore"))
         .ExitCode;
-
-    // This is technically only in the NuGet CLI program, not dotnet, so maybe it deserves its own service.
-    /// <exception cref="ProcessException"></exception>
-    public static async Task installLocalPackage(string packageFilePath, string destinationDirectory, CancellationToken cancellationToken = default) =>
-        (await Process.ExecFile("nuget", ["add", packageFilePath, "-Source", destinationDirectory, "-Expand", "-NonInteractive"], cancellationToken: cancellationToken))
-        .EnsureSuccessful("Installation failed to copy package to local cache", ProcessResult.Details.All);
 
     /// <exception cref="ProcessException"></exception>
     public static async Task<string> getPackageCacheDir(CancellationToken cancellationToken = default) =>

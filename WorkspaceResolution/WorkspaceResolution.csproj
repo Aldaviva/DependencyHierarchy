@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>net10.0</TargetFramework>
+        <TargetFramework>net10.0-windows</TargetFramework>
         <RuntimeIdentifiers>win-x64;win-arm64</RuntimeIdentifiers>
         <AssemblyTitle>Workspace Resolution</AssemblyTitle>
         <Authors>Ben Hutchison</Authors>
@@ -23,13 +23,14 @@
     <ItemGroup>
         <Content Include="ben.ico" />
         <AdditionalFiles Include="ExceptionAdjustments.txt" />
-        <EmbeddedResource Include="Data\WorkspaceResolution.props" LogicalName="WorkspaceResolution.props" />
+        <EmbeddedResource Include="Data\WorkspaceResolution.targets" LogicalName="WorkspaceResolution.targets" />
     </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="envdte" Version="17.14.40260" />
         <PackageReference Include="Gapotchenko.FX.Diagnostics.Process" Version="2026.8.3" />
         <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="5.1.0" />
+        <PackageReference Include="Unfucked.Windows" Version="0.0.1-beta.13" />
     </ItemGroup>
 
     <ItemGroup>

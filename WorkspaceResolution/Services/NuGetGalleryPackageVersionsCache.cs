@@ -9,7 +9,7 @@ public sealed class NuGetGalleryPackageVersionsCache(NuGetGalleryService nuGetGa
         using Semaphore semaphore = new(1, 1, "WorkspaceResolution.galleryPackageExistanceCache");
         semaphore.WaitOne();
         try {
-            await using FileStream galleryPackageExistenceCacheStream = new(Path.Combine(localPackageDirectory, "nugetGalleryExistingPackageVersions.json"), FileMode.OpenOrCreate,
+            await using FileStream galleryPackageExistenceCacheStream = new(Path.Combine(localPackageDirectory, "..", "nugetGalleryExistingPackageVersions.json"), FileMode.OpenOrCreate,
                 FileAccess.ReadWrite, FileShare.None);
             Dictionary<string, HashSet<string>> galleryPackageExistenceCache;
             try {

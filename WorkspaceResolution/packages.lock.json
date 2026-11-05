@@ -1,7 +1,7 @@
 {
   "version": 1,
   "dependencies": {
-    "net10.0": {
+    "net10.0-windows7.0": {
       "envdte": {
         "type": "Direct",
         "requested": "[17.14.40260, )",
@@ -27,6 +27,17 @@
         "requested": "[5.1.0, )",
         "resolved": "5.1.0",
         "contentHash": "YceiKmxdsBrlkAJpmJ2N8XkLyAH01xLsm4VLfjNp5MvtAom2wflZtEBz3CLMQret6Z7jSh3oBO1ULF1Is0tNxA=="
+      },
+      "Unfucked.Windows": {
+        "type": "Direct",
+        "requested": "[0.0.1-beta.13, )",
+        "resolved": "0.0.1-beta.13",
+        "contentHash": "lSFRTc/1C1G38MoQD7UDATEpdKJ0YrbAoKIdTWLkJjxB+0HG3MjQrYD6yFHLYA4mXvOvfyptryy9sdyDOzgtUg==",
+        "dependencies": {
+          "ThrottleDebounce": "3.0.0",
+          "Unfucked": "0.0.1-beta.61",
+          "mwinapi": "0.3.0.6"
+        }
       },
       "Gapotchenko.FX": {
         "type": "Transitive",
@@ -100,6 +111,27 @@
           "Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime": "17.14.40254"
         }
       },
+      "mwinapi": {
+        "type": "Transitive",
+        "resolved": "0.3.0.6",
+        "contentHash": "ifbh/zHTsN+hrT2kBE4he8+Bq9DS/9b8tA0aVIdJCOK3Y4O0hdFtZSiQHpJX1YkH4/JMmF0V5hHQDahS5i9U1g==",
+        "dependencies": {
+          "System.Management": "6.0.0"
+        }
+      },
+      "System.CodeDom": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "CPc6tWO1LAer3IzfZufDBRL+UZQcj5uS207NHALQzP84Vp/z6wF0Aa0YZImOQY8iStY0A2zI/e3ihKNPfUm8XA=="
+      },
+      "System.Management": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "sHsESYMmPDhQuOC66h6AEOs/XowzKsbT9srMbX71TCXP58hkpn1BqBjdmKj1+DCA/WlBETX1K5WjQHwmV0Txrg==",
+        "dependencies": {
+          "System.CodeDom": "6.0.0"
+        }
+      },
       "ThrottleDebounce": {
         "type": "Transitive",
         "resolved": "3.0.0",
@@ -107,8 +139,8 @@
       },
       "Unfucked": {
         "type": "Transitive",
-        "resolved": "0.0.1-beta.54",
-        "contentHash": "OQc6BndY7n2x6MYUrq9PUeVSYoarX5Dlk69rciEhVgxh34iCJo9LFnbxNhYjP6sCkwgyuSIwFedaPi/Ofsitzg=="
+        "resolved": "0.0.1-beta.61",
+        "contentHash": "+xzFudtaGmDvf26bepf95DZ9o9B4w+LXt3WAX3ob7KF0onMrhLX/FbDcwQPNLwvxga02tSYAPNQmlLaz09AO6Q=="
       },
       "Unfucked.Caching": {
         "type": "Transitive",
@@ -117,29 +149,48 @@
       },
       "Unfucked.HTTP": {
         "type": "Transitive",
-        "resolved": "0.0.1-beta.34",
-        "contentHash": "PnnuYrl1Db1sKUSvbk4p6PoExEJVgEDPvybwhjMOAzY+VMGHNM0Fs/q7gnYzkENtxc3ebX3HtTKPPmJWuDuCsA==",
+        "resolved": "0.0.1-beta.40",
+        "contentHash": "cVJ3srqAE4Uu8zfVsSvVB9FIfPtg/s7h8eyf/tsnUWhr6du87jOyToed9blX6IzuXcFdBr8dICcuLFcfcqm00g==",
         "dependencies": {
-          "Unfucked": "0.0.1-beta.54"
+          "Unfucked": "0.0.1-beta.61",
+          "Unfucked.Caching": "0.0.1-beta.6"
         }
       },
       "dependencies": {
         "type": "Project",
         "dependencies": {
-          "Unfucked": "[0.0.1-beta.54, )"
+          "Unfucked": "[0.0.1-beta.61, )"
         }
       },
       "nugetgalleryclient": {
         "type": "Project",
         "dependencies": {
           "ThrottleDebounce": "[3.0.0, )",
-          "Unfucked": "[0.0.1-beta.54, )",
+          "Unfucked": "[0.0.1-beta.61, )",
           "Unfucked.Caching": "[0.0.1-beta.6, )",
-          "Unfucked.HTTP": "[0.0.1-beta.34, )"
+          "Unfucked.HTTP": "[0.0.1-beta.40, )"
         }
       }
     },
-    "net10.0/win-arm64": {},
-    "net10.0/win-x64": {}
+    "net10.0-windows7.0/win-arm64": {
+      "System.Management": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "sHsESYMmPDhQuOC66h6AEOs/XowzKsbT9srMbX71TCXP58hkpn1BqBjdmKj1+DCA/WlBETX1K5WjQHwmV0Txrg==",
+        "dependencies": {
+          "System.CodeDom": "6.0.0"
+        }
+      }
+    },
+    "net10.0-windows7.0/win-x64": {
+      "System.Management": {
+        "type": "Transitive",
+        "resolved": "6.0.0",
+        "contentHash": "sHsESYMmPDhQuOC66h6AEOs/XowzKsbT9srMbX71TCXP58hkpn1BqBjdmKj1+DCA/WlBETX1K5WjQHwmV0Txrg==",
+        "dependencies": {
+          "System.CodeDom": "6.0.0"
+        }
+      }
+    }
   }
 }

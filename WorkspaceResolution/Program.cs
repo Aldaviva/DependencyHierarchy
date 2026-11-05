@@ -3,6 +3,7 @@ using NuGetGalleryClient;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using WorkspaceResolution.Services;
+using WorkspaceResolution.Services.MsBuild;
 
 using CommandLineApplication app = new() {
     UnrecognizedArgumentHandling = UnrecognizedArgumentHandling.Throw,
@@ -40,7 +41,7 @@ app.Command("restore-dependents", restoreCommand => {
         }
 
         await deletePackageDir(Path.Combine(nugetPackageCacheDir, packageName.Value!, packageVersion.Value!));
-        await DotnetCliService.installLocalPackage(packageFilename.Value!, nugetPackageCacheDir);
+        await NuGetCliService.installLocalPackage(packageFilename.Value!, nugetPackageCacheDir, cancellationToken: ct);
         Console.WriteLine("Installed {0} {1} into local NuGet package cache.", packageName.Value, packageVersion.Value);
 
         await DotnetCliService.restoreOpenVisualStudioProjectsThatDependOn(packageName.Value!, skipSolutionFile.Value(), buildAfterRestore.HasValue(), ct);
@@ -55,7 +56,7 @@ return await app.ExecuteAsync(args);
  * Another fallback idea: if the file still can't be deleted, then walk through all files to delete until we find the locked one, then compare its date, size, and hash to the corresponding file inside the nupkg, and if they're identical, then leave the locked file and just let `nuget add` expand around it. This shouldn't have too much of a downside because Unfucked.BuildInfoGenerator.dll changes extremely infrequently compared to Unfucked.dll, but just to be sure, we can log a message saying we skipped it. If the file did change, we should probably fail the build like before and let the user find and kill msbuild themselves.
  */
 static async Task deletePackageDir(string packageDirToDelete) {
-    Queue<MsBuildKiller>         msBuildKillers      = new Queue<MsBuildKiller>([new EnvironmentVariableMsBuildKiller(), new HandleMsBuildKiller()]);
+    Queue<MsBuildKiller>         msBuildKillers      = new([new EnvironmentVariableMsBuildKiller(), new HandleMsBuildKiller(), new LibraryMsBuildKiller()]);
     string?                      lockedFilename      = null; // does not include a path
     UnauthorizedAccessException? mostRecentException = null;
 
